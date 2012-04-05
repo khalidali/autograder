@@ -1,4 +1,21 @@
 Autograder::Application.routes.draw do
+
+  match 'assignments/create' => 'assignments#create', :via => :post
+  match 'assignments/:id/add_student_keys' => 'assignments#add_student_keys', :via => :put
+  match 'assignments/:id/remove_student_keys' => 'assignments#remove_student_keys', :via => :put
+  match 'assignments/:id/change_due_date' => 'assignments#change_due_date', :via => :put
+  match 'assignments/:id/submit' => 'assignments#submit', :via => :put
+  match 'assignments/:id/retrieve_all_submissions' => 'assignments#retrieve_all_submissions', :via => :get
+  match 'assignments/:id/retrieve_submissions_by_status' => 'assignments#retrieve_submissions_by_status', :via => :get
+  match 'assignments/:id/retrieve_submission_by_student_key' => 'assignments#retrieve_submission_by_student_key', :via => :get
+ 
+  
+  #match 'assignments/:id/find_by_list_of_keys' => 'assignments#find_by_list_of_keys', :via => :get
+  #match 'assignments/:id/find_by_grading' => 'assignments#find_by_grading', :via => :get
+  
+  #resources :assignments, :only => [:create, :edit, :destroy ]
+  
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

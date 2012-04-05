@@ -1,17 +1,31 @@
 require 'spec_helper'
 
 describe Assignment do
-  pending "add some examples to (or delete) #{__FILE__}"
-  
-  describe "add student keys to the assignment" do
-    before :each do 
-      @assignment = Factory(:assignment)
-
+  # "add some examples to (or delete) #{__FILE__}"
+    describe "add_student_keys" do
+       it 'should add a student keys' do
+       end
     end
-    it "should Student#create methods for each key passed to it in a list" do
-      Student.should_receive(:create).with("s_key1")
-      Student.should_receive(:create).with("s_key2")
-      @assignment.add_keys(["s_key1", "s_key2"])
+    
+    describe "remove_Student_keys" do
+       it 'should remove student keys' do
+       end
+    end
+    
+    describe "change_due_date" do
+      it 'should change due date' do
+      end
+    end
+    
+    describe "find_by_keys" do
+      it 'should find submission by student keys' do
+      end
+    end
+    
+    describe "find_by_status" do
+      it 'should find submission by status' do
+      end
     end
   
 end
+
