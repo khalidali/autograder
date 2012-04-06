@@ -9,7 +9,7 @@ class AssignmentsController < ApplicationController
        @assignment.add_student_keys(student_keys)
   	   @assignment.save
     end
-    render "create.json.rabl"
+    #render "create.json.rabl"
   end
 
   def add_student_keys
@@ -19,7 +19,7 @@ class AssignmentsController < ApplicationController
        @assignment.add_student_keys(@student_keys)
 	   @assignment.save
     end
-    render "add_student_keys.json.rabl"
+    #render "add_student_keys.json.rabl"
   end
   
   def remove_student_keys
@@ -30,7 +30,7 @@ class AssignmentsController < ApplicationController
        @assignment.remove_student_keys(@student_keys)
 	   @assignment.save
     end
-    render "remove_student_keys.json.rabl"
+    #render "remove_student_keys.json.rabl"
   end
   
   def change_due_date
@@ -39,40 +39,43 @@ class AssignmentsController < ApplicationController
       @assignment.change_due_date(params[:due_date])
       @assignment.save
     end 
-    render "change_due_date.json.rabl"
+    #render "change_due_date.json.rabl"
   end
   
   def submit
     @assignment = Assignment.find_by_id(params[:id])
+    
     if(@assignment.students.find_all_by_student_key(params[:student_key]).any?)
       @student = @assignment.students.find_by_student_key(params[:student_key])
       @student.add_submission(params[:submission])
       @student.save()
-      render "submit_successful.json.rabl"
+      @submission_successful = true
     else
-      render "submit_fail.json.rabl"
+      @submission_successful = true
     end
   end
   
   def retrieve_submissions_by_status
     @assignment = Assignment.find_by_id(params[:id])
     @submissions = @assignment.submissions.find_all_by_status(params[:status])
-    render "retrieve_submissions_by_status.json.rabl" 
+    #render "retrieve_submissions_by_status.json.rabl" 
   end
 
   def retrieve_all_submissions
     @assignment = Assignment.find_by_id(params[:id])
     @submissions = @assignment.submissions
-    render "retrieve_all_submissions.json.rabl" 
+    #render "retrieve_all_submissions.json.rabl" 
   end
   
   def retrieve_submission_by_student_key
     @assignment = Assignment.find_by_id(params[:id])
     if(@assignment.students.find_all_by_student_key(params[:student_key]).any?)
       @submissions = @assignment.students.find_by_student_key(params[:student_key]).submissions 
-      render "retrieve_submission_by_student_key_successful.json.rabl"
+      @student_key_valid = true
+      #render :retrieve_submission_by_student_key_successful
     else
-      render "invalid_student_key.json.rabl"
+      @student_key_valid = false
+      #render :invalid_student_key
     end    
   end
 end

@@ -156,6 +156,7 @@ describe AssignmentsController do
 			@fake_assignment = mock(:assignment)
 			@submissions_list = [mock(:submission), mock(:submission)]
 			@filtered_submissions = [mock(:submission), mock(:submission)]
+			#run_in_isolation
 		end		
 		it "should find the assigment by id" do
 			Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
