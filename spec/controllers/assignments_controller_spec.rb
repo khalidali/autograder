@@ -156,7 +156,6 @@ describe AssignmentsController do
 			@fake_assignment = mock(:assignment)
 			@submissions_list = [mock(:submission), mock(:submission)]
 			@filtered_submissions = [mock(:submission), mock(:submission)]
-			#run_in_isolation
 		end		
 		it "should find the assigment by id" do
 			Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
@@ -192,8 +191,8 @@ describe AssignmentsController do
 		end
 	end
 
-	############# retrieve_all_submissions #####################
-  describe "Retreive list of submissions by grading status" do
+	################## retrieve_all_submissions ################
+  describe "Retreive list of all submissions" do
 		before(:each) do
 			@fake_assignment = mock(:assignment)
 			@submissions_list = [mock(:submission), mock(:submission)]
@@ -201,64 +200,78 @@ describe AssignmentsController do
 		it "should find the assigment by id" do
 			Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
 			@fake_assignment.stub(:submissions).and_return(@submissions_list)
-			get retrieve_all_submissions, {:id => "id"}
+			get :retrieve_all_submissions, {:id => "id"}
 		end
 		it "should retreive submissions from assignment" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.should_receive(:submissions).and_return(@submissions_list)
-			get retrieve_all_submissions, {:id => "id"}
+			get :retrieve_all_submissions, {:id => "id"}
 		end
 		it "should render retrieve_submission_by_status template" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:submissions).and_return(@submissions_list)
-			get retrieve_all_submissions, {:id => "id"}
+			get :retrieve_all_submissions, {:id => "id"}
 			response.should render_template('retrieve_all_submissions')
 		end
 		it "should make the results available to the template" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:submissions).and_return(@submissions_list)
-			get retrieve_all_submissions, {:id => "id"}
+			get :retrieve_all_submissions, {:id => "id"}
 			assigns(:submissions).should == @filtered_submissions
 		end
 	end
 
 	############# retrieve_submission_by_student_key ###########
-	describe "Retreive list of submissions by grading status" do
+	describe "Retreive list of submissions by student key" do
 		before(:each) do
 			@fake_assignment = mock(:assignment)
 			@submissions_list = [mock(:submission), mock(:submission)]
 			@filtered_submissions = [mock(:submission), mock(:submission)]
+			@student = mock(:student)
+			@student_list = [mock(:student), mock(:student)]
 		end		
 		it "should find the assigment by id" do
 			Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
+			@fake_assignment.stub(:students).and_return(@student_list)
 			@fake_assignment.stub(:submissions).and_return(@submissions_list)
 			@submissions_list.stub(:find_all_by_status).and_return(@filtered_submissions)
-			get :retrieve_submissions_by_status, {:id => "id", :status => "status"}
+			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
 		end
-		it "should retreive submissions from assignment" do
+		it "should retreive students from assignment" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
-			@fake_assignment.should_receive(:submissions).and_return(@submissions_list)
-			@submissions_list.stub(:find_all_by_status).and_return(@filtered_submissions)
-			get :retrieve_submissions_by_status, {:id => "id", :status => "status"}
+			@fake_assignment.should_receive(:students).and_return(@student_list)
+			@student_list.stub(:find_by_student_key).with("key").and_return(@student)
+			@student.stub(:subissions).and_return(@filtered_submissions)
+			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
 		end
-		it "should filter submissions by status" do 
+		it "should find student by key" do 
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
-			@fake_assignment.stub(:submissions).and_return(@submissions_list)
-			@submissions_list.should_receive(:find_all_by_status).with("status").and_return(@filtered_submission)
-			get :retrieve_submissions_by_status, {:id => "id", :status => "status"}
+			@fake_assignment.stub(:students).and_return(@student_list)
+			@student_list.should_receive(:find_by_student_key).with("key").and_return(@student)
+			@student.stub(:subissions).and_return(@filtered_submissions)
+			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
+		end
+		it "should get submissions from student" do 
+			Assignment.stub(:find_by_id).and_return(@fake_assignment)
+			@fake_assignment.stub(:students).and_return(@student_list)
+			@student_list.stub(:find_by_student_key).and_return(@student)
+			@student.should_receive(:subissions).and_return(@filtered_submissions)
+			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
 		end
 		it "should render retrieve_submission_by_status template" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
-			@fake_assignment.stub(:submissions).and_return(@submissions_list)
-			@submissions_list.stub(:find_all_by_status).and_return(@filtered_submissions)
-			get :retrieve_submissions_by_status, {:id => "id", :status => "status"}
-			response.should render_template('retrieve_submissions_by_status')
+			@fake_assignment.stub(:students).and_return(@student_list)
+			@student_list.stub(:find_by_student_key).and_return(@student)
+			@student.stub(:subissions).and_return(@filtered_submissions)
+			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
+			response.should render_template('retrieve_submission_by_student_key')
 		end
 		it "should make the results available to the template" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
-			@fake_assignment.stub(:submissions).and_return(@submissions_list)
-			@submissions_list.stub(:find_all_by_status).and_return(@filtered_submissions)
-			get :retrieve_submissions_by_status, {:id => "id", :status => "status"}
+			@fake_assignment.stub(:students).and_return(@student_list)
+			@student_list.stub(:find_by_student_key).and_return(@student)
+			@student.stub(:subissions).and_return(@filtered_submissions)
+			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
 			assigns(:submissions).should == @filtered_submissions
 		end
 	end
