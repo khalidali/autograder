@@ -132,23 +132,64 @@ describe AssignmentsController do
   end
   
 	############### submit ###################
-  describe "Submission for an assignment" do 
-    before(:each) do	
-    	@fake_assignment = mock(:assignment)
-    	@fake_student = mock(:student)
-    	@fake_student_list = mock(:student_list)
-	    @fake_submission = mock(:submission1)  
-    end
-    
-    it 'should make a successful submission with a student key' do
-      Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
-      @fake_assignment.stub(:students).and_return(@fake_student_list)
-      @fake_student_list.stub(:any?).and_return(true)
-      @fake_student_list.stub(:find_by_student_key).with("s_key1").and_return(@fake_student)
-      @fake_student.stub(:add_submission).with("submission")
-      put :submit, {:id => "id", :student_key => "s_key1", :submission => "submission"}
-    end
-  end
+	describe "Submit Assignment" do
+		before(:each) do
+			@fake_assignment = mock(:assignment)
+			@submissions_list = [mock(:submission), mock(:submission)]
+			@filtered_submissions = [mock(:submission), mock(:submission)]
+			@student = mock(:student)
+			@student_list = [mock(:student), mock(:student)]
+		end		
+		it "should find the assigment by id" do
+			Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
+			@fake_assignment.stub(:students).and_return(@student_list)
+			@student_list.stub(:find_by_student_key).and_return(@student)
+			@student.stub(:add_submission)
+			@student.stub(:save)
+			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+		end
+		it "should retreive students from assignment" do
+			Assignment.stub(:find_by_id).and_return(@fake_assignment)
+			@fake_assignment.should_receive(:students).and_return(@student_list)
+			@student_list.stub(:find_by_student_key).with("key").and_return(@student)
+			@student.stub(:add_submission)
+			@student.stub(:save)
+			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+		end
+		it "should find student by key" do 
+			Assignment.stub(:find_by_id).and_return(@fake_assignment)
+			@fake_assignment.stub(:students).and_return(@student_list)
+			@student_list.should_receive(:find_by_student_key).with("key").and_return(@student)
+			@student.stub(:add_submission)
+			@student.stub(:save)
+			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+		end
+		it "should add a submission to the student" do 
+			Assignment.stub(:find_by_id).and_return(@fake_assignment)
+			@fake_assignment.stub(:students).and_return(@student_list)
+			@student_list.stub(:find_by_student_key).and_return(@student)
+			@student.should_receive(:add_submission).with("submission")
+			@student.stub(:save)
+			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+		end
+		it "should save the changes on student" do 
+			Assignment.stub(:find_by_id).and_return(@fake_assignment)
+			@fake_assignment.stub(:students).and_return(@student_list)
+			@student_list.stub(:find_by_student_key).and_return(@student)
+			@student.stub(:add_submission)
+			@student.should_receive(:save)
+			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+		end
+		it "should render submit template" do
+			Assignment.stub(:find_by_id).and_return(@fake_assignment)
+			@fake_assignment.stub(:students).and_return(@student_list)
+			@student_list.stub(:find_by_student_key).and_return(@student)
+			@student.stub(:add_submission)
+			@student.stub(:save)
+			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+			response.should render_template('submit')
+		end
+	end
 
 	############# retrieve_submissions_by_status ############
   describe "Retreive list of submissions by grading status" do
@@ -217,7 +258,7 @@ describe AssignmentsController do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:submissions).and_return(@submissions_list)
 			get :retrieve_all_submissions, {:id => "id"}
-			assigns(:submissions).should == @filtered_submissions
+			assigns(:submissions).should == @submissions_list
 		end
 	end
 
@@ -233,36 +274,36 @@ describe AssignmentsController do
 		it "should find the assigment by id" do
 			Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
 			@fake_assignment.stub(:students).and_return(@student_list)
-			@fake_assignment.stub(:submissions).and_return(@submissions_list)
-			@submissions_list.stub(:find_all_by_status).and_return(@filtered_submissions)
+			@student_list.stub(:find_by_student_key).and_return(@filtered_submissions)
+			@filtered_submissions.stub(:submissions).and_return(@submissions_list)
 			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
 		end
 		it "should retreive students from assignment" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.should_receive(:students).and_return(@student_list)
 			@student_list.stub(:find_by_student_key).with("key").and_return(@student)
-			@student.stub(:subissions).and_return(@filtered_submissions)
+			@student.stub(:submissions).and_return(@filtered_submissions)
 			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
 		end
 		it "should find student by key" do 
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:students).and_return(@student_list)
 			@student_list.should_receive(:find_by_student_key).with("key").and_return(@student)
-			@student.stub(:subissions).and_return(@filtered_submissions)
+			@student.stub(:submissions).and_return(@filtered_submissions)
 			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
 		end
 		it "should get submissions from student" do 
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:students).and_return(@student_list)
 			@student_list.stub(:find_by_student_key).and_return(@student)
-			@student.should_receive(:subissions).and_return(@filtered_submissions)
+			@student.should_receive(:submissions).and_return(@filtered_submissions)
 			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
 		end
 		it "should render retrieve_submission_by_status template" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:students).and_return(@student_list)
 			@student_list.stub(:find_by_student_key).and_return(@student)
-			@student.stub(:subissions).and_return(@filtered_submissions)
+			@student.stub(:submissions).and_return(@filtered_submissions)
 			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
 			response.should render_template('retrieve_submission_by_student_key')
 		end
@@ -270,7 +311,7 @@ describe AssignmentsController do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:students).and_return(@student_list)
 			@student_list.stub(:find_by_student_key).and_return(@student)
-			@student.stub(:subissions).and_return(@filtered_submissions)
+			@student.stub(:submissions).and_return(@filtered_submissions)
 			get :retrieve_submission_by_student_key, {:id => "id", :student_key => "key"}
 			assigns(:submissions).should == @filtered_submissions
 		end
