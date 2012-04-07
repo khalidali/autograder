@@ -8,7 +8,7 @@ class Assignment < ActiveRecord::Base
   end
   
   def remove_student_keys(student_keys)
-    self.students.find_all{|std| student_keys.include?(std.student_key)}.each{|std| std.destory}
+    self.students.find_all{|std| student_keys.include?(std.student_key)}.each{|std| std.destroy}
   end
   
   def change_due_date(due_date)
