@@ -1,4 +1,4 @@
-object @assignment => "New Dude Date"
+object @assignment => "New Due Date"
 
 attributes :due_date
 
