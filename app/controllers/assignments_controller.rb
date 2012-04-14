@@ -9,6 +9,19 @@ class AssignmentsController < ApplicationController
        @assignment.add_student_keys(student_keys)
   	   @assignment.save
     end
+    
+    if(params[:autograder] != nil)
+      @assignment = Assignment.find_by_id(params[:id])
+      @assignment.autograder = params[:autograder].tempfile.path
+      @assignment.save
+    end
+    
+  end
+  
+  def add_autograder 
+    @assignment = Assignment.find_by_id(params[:id])
+    @assignment.autograder = params[:autograder].tempfile.path
+    @assignment.save
   end
 
   def add_student_keys
@@ -70,4 +83,5 @@ class AssignmentsController < ApplicationController
       @student_key_valid = false
     end    
   end
+  
 end

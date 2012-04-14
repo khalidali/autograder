@@ -11,14 +11,31 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120325032620) do
+ActiveRecord::Schema.define(:version => 20120413205629) do
 
   create_table "assignments", :force => true do |t|
     t.time     "due_date"
     t.string   "prof_key"
+    t.string   "autograder"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "students", :force => true do |t|
     t.string   "student_key"
@@ -28,8 +45,8 @@ ActiveRecord::Schema.define(:version => 20120325032620) do
   end
 
   create_table "submissions", :force => true do |t|
-    t.text     "body"
-    t.text     "output"
+    t.string   "body"
+    t.string   "output"
     t.string   "status"
     t.integer  "student_id"
     t.datetime "created_at"
