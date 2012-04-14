@@ -1,7 +1,7 @@
 Autograder::Application.routes.draw do
 
   match 'assignments/create' => 'assignments#create', :via => :post
-  match 'assignments/:id/add_autograder' => 'assignments#add_autograder', :via => :put
+  match 'assignments/:id/update_autograder' => 'assignments#update_autograder', :via => :put
   match 'assignments/:id/add_student_keys' => 'assignments#add_student_keys', :via => :put
   match 'assignments/:id/remove_student_keys' => 'assignments#remove_student_keys', :via => :put
   match 'assignments/:id/change_due_date' => 'assignments#change_due_date', :via => :put

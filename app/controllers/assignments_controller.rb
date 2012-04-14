@@ -17,7 +17,7 @@ class AssignmentsController < ApplicationController
     
   end
   
-  def add_autograder 
+  def update_autograder 
       @assignment = Assignment.find_by_id(params[:id])
       @assignment.autograder = File.open(params[:autograder].tempfile.path, "rb").read()
       @assignment.save

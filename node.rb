@@ -32,5 +32,10 @@ f.syswrite(output)
 f.close
 
 
-system("curl -X PUT localhost:3000/submissions/#{ARGV[0]}/update_status  -F output=@output -F status='complete'")
+system("curl -X PUT localhost:3000/submissions/#{ARGV[0]}/update_status.json  -F output=@output -F status='complete'")
+
+File.delete("tmp_autograder.rb")
+File.delete("tmp_student_code.rb")
+File.delete("output")
+puts "all deleted"
 
