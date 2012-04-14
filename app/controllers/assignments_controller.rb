@@ -11,14 +11,7 @@ class AssignmentsController < ApplicationController
     end
     
     if(params[:autograder] != nil)
-      temp_autograder_file = File.open(params[:autograder].tempfile.path, "r")
-      autograder_file = File.new(Rails.root + "autograders" + (@assignment.prof_key + "_autograder"), "w")
-      autograder_file.write(temp_autograder_file.read())
-      autograder_file.write("traaaaaaaaa")
-      autograder_file.chmod(0777)
-      autograder_file.close
-      temp_autograder_file.close
-      @assignment.autograder = (Rails.root + "autograders" + (@assignment.prof_key + "_autograder")).to_s
+      @assignment.autograder = File.open(params[:autograder].tempfile.path, "rb").read()
       @assignment.save
     end
     
@@ -26,13 +19,7 @@ class AssignmentsController < ApplicationController
   
   def add_autograder 
       @assignment = Assignment.find_by_id(params[:id])
-      temp_autograder_file = File.open(params[:autograder].tempfile.path, "r")
-      autograder_file = File.new(Rails.root + "autograders" + (@assignment.prof_key + "_autograder"), "w+")
-      autograder_file.write(temp_autograder_file.read())
-      autograder_file.chmod(0777)
-      autograder_file.close
-      temp_autograder_file.close
-      @assignment.autograder = (Rails.root + "autograders" + (@assignment.prof_key + "_autograder")).to_s
+      @assignment.autograder = File.open(params[:autograder].tempfile.path, "rb").read()
       @assignment.save
   end
 
@@ -66,8 +53,9 @@ class AssignmentsController < ApplicationController
   def submit
     @assignment = Assignment.find_by_id(params[:id])
     @student = @assignment.students.find_by_student_key(params[:student_key])
-    if(@student != nil)
-      @student.add_submission(params[:submission].tempfile.path)
+    if(@student != nil)    
+      submission = File.open(params[:submission].tempfile.path, "rb").read()
+      @student.add_submission(submission)
       @student.save()
       @submission_successful = true
     else

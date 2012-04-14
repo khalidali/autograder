@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(:version => 20120413205629) do
   create_table "assignments", :force => true do |t|
     t.time     "due_date"
     t.string   "prof_key"
-    t.string   "autograder"
+    t.text     "autograder"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -45,8 +45,8 @@ ActiveRecord::Schema.define(:version => 20120413205629) do
   end
 
   create_table "submissions", :force => true do |t|
-    t.string   "body"
-    t.string   "output"
+    t.text     "body"
+    t.text     "output"
     t.string   "status"
     t.integer  "student_id"
     t.datetime "created_at"

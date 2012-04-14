@@ -4,23 +4,28 @@
 
 #puts files
 
+
 puts "ID    : " + ARGV[0]
 puts "GRADER: " + ARGV[1]
 puts "SUBMIS: " + ARGV[2]
 
-'''
-file1 = File.open("/tmp/inst_autograder.rb", "r" )
-file1.chmod(0111)
-file1.close
 
-file2 = File.open(ARGV[2], "r" )
-file2.chmod(0111)
-file2.close
-'''
+autograder = File.new("tmp_autograder.rb", "w+" )
+autograder.write(ARGV[1])
+autograder.chmod(0777)
+autograder.close
+
+student_code = File.new("tmp_student_code.rb", "w+" )
+student_code.write(ARGV[2])
+student_code.chmod(0777)
+student_code.close
+
 puts "now I'm gonna run"
 
-output = `#{ARGV[1]} #{ARGV[2]}`
+#output = `#{ARGV[1]} #{ARGV[2]}`
 #output = `/tmp/inst_autograder.rb #{ARGV[2]}`
+
+output = `./tmp_autograder.rb tmp_student_code.rb`
 
 f = File.new("output", "w+")
 f.syswrite(output)

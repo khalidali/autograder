@@ -3,7 +3,7 @@ class CreateAssignments < ActiveRecord::Migration
     create_table :assignments do |t|
       t.time :due_date
       t.string :prof_key
-      t.string :autograder
+      t.text :autograder
 
       t.timestamps
     end
