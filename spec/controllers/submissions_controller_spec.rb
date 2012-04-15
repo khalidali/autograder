@@ -2,6 +2,7 @@ require 'spec_helper'
 
 
 describe SubmissionsController do
+
   #################### update_status ###############
   describe "Update Grading Status" do
     before(:each) do
@@ -35,12 +36,21 @@ describe SubmissionsController do
       @output.stub_chain(:tempfile, :path).and_return(@path)
       File.should_receive(:open).and_return(@file)
       @file.should_receive(:read).and_return(@content)
+      @fake_submission.stub(:output=).with(@content)
+      @fake_submission.stub(:status=)
+      @fake_submission.stub(:save)
+      put :update_status, {:id => "id", :status => "status", :output => @output}
+    end
+    it 'should update the output' do
+      Submission.stub(:find_by_id).and_return(@fake_submission)
+      @output.stub_chain(:tempfile, :path).and_return(@path)
+      File.stub_chain(:open, :read).and_return(@content)
       @fake_submission.should_receive(:output=).with(@content)
       @fake_submission.stub(:status=)
       @fake_submission.stub(:save)
       put :update_status, {:id => "id", :status => "status", :output => @output}
     end
-    it 'should read the file content' do
+    it 'should update the status' do
       Submission.stub(:find_by_id).and_return(@fake_submission)
       @output.stub_chain(:tempfile, :path).and_return(@path)
       File.stub_chain(:open, :read).and_return(@content)
@@ -54,7 +64,7 @@ describe SubmissionsController do
       @output.stub_chain(:tempfile, :path).and_return(@path)
       File.stub_chain(:open, :read).and_return(@content)
       @fake_submission.stub(:output=)
-      @fake_submission.stub(:status=).with("status")
+      @fake_submission.stub(:status=)
       @fake_submission.should_receive(:save)
       put :update_status, {:id => "id", :status => "status", :output => @output}
     end
