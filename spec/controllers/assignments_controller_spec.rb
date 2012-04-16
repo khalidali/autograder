@@ -1,10 +1,9 @@
 require 'spec_helper'
 
 describe AssignmentsController do
-  #render_views
   
 	#################### CREATE #########################
-  describe "Create an Assignment with an Autograder" do
+  describe "Create an Assignment with an a list of Student Keys" do
     before(:each) do
       @fake_assignment = mock(:assignment)
     end
@@ -34,7 +33,130 @@ describe AssignmentsController do
 			response.should render_template('create')
 		end
   end
-
+  
+  describe "Create an Assignment with an Autograder" do
+    before(:each) do
+      @fake_assignment = mock(:assignment)
+      @content = mock(:string)
+      @autograder = fixture_file_upload('/files/temp.rb')
+      @path = mock(:string)
+      @file = mock(:file)
+    end
+    it 'should create an Assignment instance with the given parameters' do
+      Assignment.should_receive(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+      @autograder.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read)
+      @fake_assignment.stub(:autograder=)
+      @fake_assignment.stub(:save)
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+    end
+    it 'should get the file path from the params' do
+			Assignment.stub(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+			@autograder.should_receive(:tempfile).and_return(@file)
+      @file.should_receive(:path).and_return(@path)
+      File.stub_chain(:open, :read)
+      @fake_assignment.stub(:autograder=)
+      @fake_assignment.stub(:save)
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+		end
+		it 'should read the file content' do
+			Assignment.stub(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+			@autograder.stub_chain(:tempfile, :path)
+      File.should_receive(:open).and_return(@file)
+      @file.should_receive(:read).and_return(@content)
+      @fake_assignment.stub(:autograder=).with(@content)
+      @fake_assignment.stub(:save)
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+		end
+		it 'should add an autograder to the assignment' do
+			Assignment.stub(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+			@autograder.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read).and_return(@content)
+      @fake_assignment.should_receive(:autograder=).with(@content)
+      @fake_assignment.stub(:save)
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+		end
+		it 'should save the assignment' do
+			Assignment.stub(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+			@autograder.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read)
+      @fake_assignment.stub(:autograder=)
+      @fake_assignment.should_receive(:save)
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+		end
+		it 'should render the create template' do
+			Assignment.stub(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+			@autograder.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read)
+      @fake_assignment.stub(:autograder=)
+      @fake_assignment.stub(:save)
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+			response.should render_template('create')
+		end
+  end
+  
+  #################### update_autograder ###############
+  describe "Update the Autograder for a givin assignment" do
+    before(:each) do
+      @fake_assignment = mock(:assignment)
+      @content = mock(:string)
+      @autograder = fixture_file_upload('/files/temp.rb')
+      @path = mock(:string)
+      @file = mock(:file)
+    end
+    it 'should find assignment by ID' do
+      Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
+      @autograder.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read)
+      @fake_assignment.stub(:autograder=)
+      @fake_assignment.stub(:save)
+      put :update_autograder, {:id => "id", :autograder => @autograder}
+    end
+    it 'should get the file path from the params' do
+			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+			@autograder.should_receive(:tempfile).and_return(@file)
+      @file.should_receive(:path).and_return(@path)
+      File.stub_chain(:open, :read)
+      @fake_assignment.stub(:autograder=)
+      @fake_assignment.stub(:save)
+      put :update_autograder, {:id => "id", :autograder => @autograder}
+		end
+		it 'should read the file content' do
+			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+			@autograder.stub_chain(:tempfile, :path)
+      File.should_receive(:open).and_return(@file)
+      @file.should_receive(:read).and_return(@content)
+      @fake_assignment.stub(:autograder=).with(@content)
+      @fake_assignment.stub(:save)
+      put :update_autograder, {:id => "id", :autograder => @autograder}
+		end
+		it 'should add an autograder to the assignment' do
+			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+			@autograder.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read).and_return(@content)
+      @fake_assignment.should_receive(:autograder=).with(@content)
+      @fake_assignment.stub(:save)
+      put :update_autograder, {:id => "id", :autograder => @autograder}
+		end
+		it 'should save the assignment' do
+			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+			@autograder.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read)
+      @fake_assignment.stub(:autograder=)
+      @fake_assignment.should_receive(:save)
+      put :update_autograder, {:id => "id", :autograder => @autograder}
+		end
+		it 'should render the create template' do
+			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+			@autograder.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read)
+      @fake_assignment.stub(:autograder=)
+      @fake_assignment.stub(:save)
+      put :update_autograder, {:id => "id", :autograder => @autograder}
+			response.should render_template('update_autograder')
+		end
+  end
+  
   #################### add_student_keys ###############
   describe "Addition of student keys per assignment" do
     before(:each) do
@@ -139,54 +261,92 @@ describe AssignmentsController do
 			@filtered_submissions = [mock(:submission), mock(:submission)]
 			@student = mock(:student)
 			@student_list = [mock(:student), mock(:student)]
+			@path = mock(:string)
+      @content = mock(:string)
+      @submission = fixture_file_upload('/files/temp.rb')
+      @file = mock(:file)
 		end		
 		it "should find the assigment by id" do
 			Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
 			@fake_assignment.stub(:students).and_return(@student_list)
 			@student_list.stub(:find_by_student_key).and_return(@student)
+			@submission.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read)
 			@student.stub(:add_submission)
 			@student.stub(:save)
-			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+			put :submit, {:id => "id", :student_key => "key", :submission => @submission}
 		end
 		it "should retreive students from assignment" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.should_receive(:students).and_return(@student_list)
 			@student_list.stub(:find_by_student_key).with("key").and_return(@student)
+			@submission.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read)
 			@student.stub(:add_submission)
 			@student.stub(:save)
-			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+			put :submit, {:id => "id", :student_key => "key", :submission => @submission}
 		end
 		it "should find student by key" do 
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:students).and_return(@student_list)
 			@student_list.should_receive(:find_by_student_key).with("key").and_return(@student)
+			@submission.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read)
 			@student.stub(:add_submission)
 			@student.stub(:save)
-			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+			put :submit, {:id => "id", :student_key => "key", :submission => @submission}
+		end
+		it "should get the file path from the params" do 
+			Assignment.stub(:find_by_id).and_return(@fake_assignment)
+			@fake_assignment.stub(:students).and_return(@student_list)
+			@student_list.stub(:find_by_student_key).with("key").and_return(@student)
+			@submission.should_receive(:tempfile).and_return(@file)
+      @file.should_receive(:path).and_return(@path)
+      File.stub_chain(:open, :read)
+			@student.stub(:add_submission)
+			@student.stub(:save)
+			put :submit, {:id => "id", :student_key => "key", :submission => @submission}
+		end
+		it "should read content from the file" do 
+			Assignment.stub(:find_by_id).and_return(@fake_assignment)
+			@fake_assignment.stub(:students).and_return(@student_list)
+			@student_list.stub(:find_by_student_key).with("key").and_return(@student)
+			@submission.stub_chain(:tempfile, :path)
+      File.should_receive(:open).and_return(@file)
+      @file.should_receive(:read).and_return(@content)
+			@student.stub(:add_submission)
+			@student.stub(:save)
+			put :submit, {:id => "id", :student_key => "key", :submission => @submission}
 		end
 		it "should add a submission to the student" do 
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:students).and_return(@student_list)
 			@student_list.stub(:find_by_student_key).and_return(@student)
-			@student.should_receive(:add_submission).with("submission")
+			@submission.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read).and_return(@content)
+			@student.should_receive(:add_submission).with(@content)
 			@student.stub(:save)
-			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+			put :submit, {:id => "id", :student_key => "key", :submission => @submission}
 		end
 		it "should save the changes on student" do 
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:students).and_return(@student_list)
 			@student_list.stub(:find_by_student_key).and_return(@student)
+			@submission.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read)
 			@student.stub(:add_submission)
 			@student.should_receive(:save)
-			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+			put :submit, {:id => "id", :student_key => "key", :submission => @submission}
 		end
 		it "should render submit template" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:students).and_return(@student_list)
 			@student_list.stub(:find_by_student_key).and_return(@student)
+			@submission.stub_chain(:tempfile, :path)
+      File.stub_chain(:open, :read)
 			@student.stub(:add_submission)
 			@student.stub(:save)
-			put :submit, {:id => "id", :student_key => "key", :submission => "submission"}
+			put :submit, {:id => "id", :student_key => "key", :submission => @submission}
 			response.should render_template('submit')
 		end
 	end
