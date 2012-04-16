@@ -5,7 +5,9 @@ class Student < ActiveRecord::Base
   
   
   def add_submission(submission)
-    self.submissions << Submission.create!(:body => submission, :status => "pending")
+    new_submission = Submission.create!(:body => submission, :status => "pending")
+    self.submissions << new_submission
+    new_submission.add_to_queue
   end
   
   def find_by_student_keys(student_keys)

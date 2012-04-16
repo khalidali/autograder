@@ -9,6 +9,20 @@ class AssignmentsController < ApplicationController
        @assignment.add_student_keys(student_keys)
   	   @assignment.save
     end
+    
+    if(params[:autograder] != nil)
+      @assignment.autograder = get_file_content(params[:autograder])
+      @assignment.save
+    end
+    
+  end
+  
+  def update_autograder 
+      @assignment = Assignment.find_by_id(params[:id])
+      if(params[:autograder] != nil)
+        @assignment.autograder = get_file_content(params[:autograder])
+        @assignment.save
+      end
   end
 
   def add_student_keys
@@ -16,7 +30,7 @@ class AssignmentsController < ApplicationController
     if(params[:student_keys] != nil)
        @student_keys = params[:student_keys][1..-2].split(',').each{|e| e.strip!}
        @assignment.add_student_keys(@student_keys)
-	   @assignment.save
+	     @assignment.save
     end
   end
   
@@ -26,7 +40,7 @@ class AssignmentsController < ApplicationController
     if(params[:student_keys] != nil)
        @student_keys = params[:student_keys][1..-2].split(',').each{|e| e.strip!}
        @assignment.remove_student_keys(@student_keys)
-	   @assignment.save
+	     @assignment.save
     end
   end
   
@@ -41,8 +55,9 @@ class AssignmentsController < ApplicationController
   def submit
     @assignment = Assignment.find_by_id(params[:id])
     @student = @assignment.students.find_by_student_key(params[:student_key])
-    if(@student != nil)
-      @student.add_submission(params[:submission])
+    if(@student != nil)    
+      submission = get_file_content(params[:submission])
+      @student.add_submission(submission)
       @student.save()
       @submission_successful = true
     else
@@ -70,4 +85,11 @@ class AssignmentsController < ApplicationController
       @student_key_valid = false
     end    
   end
+  
+  private
+    
+  def get_file_content(uploadedfile)
+    File.open(uploadedfile.tempfile.path, "rb").read()
+  end
+    
 end
