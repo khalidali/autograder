@@ -1,4 +1,4 @@
-collection @submissions 
+collection @submissions => "All submissions"
 
 child :student do 
     attributes :student_key  
