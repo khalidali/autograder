@@ -33,9 +33,10 @@ namespace :submission  do
   end
   
   desc "To update the submission (this is called automatically by the node when its done grading)"
-  task :update_sumission_status, [:status]  => [:environment] do |t, args|
+  task :update_sumission_status, [:output, :status]  => [:environment] do |t, args|
+    path = Rails.root + "test/fixtures"
     puts "Rake Task: To update the submission (this is called automatically by the node whe its done grading)"
-    a = `curl -s -X PUT /dev/null localhost:3000/submissions/1/update_status.json  -F output=@output -F status='#{args[:status]}' 2>&1`
+    a = `curl -s -X PUT /dev/null localhost:3000/submissions/1/update_status.json  -F output=@#{path + args[:output]} -F status='#{args[:status]}' 2>&1`
     puts a
   end
   
@@ -45,6 +46,6 @@ namespace :submission  do
     Rake.application.invoke_task("submission:retrieve_all_submissions")
     Rake.application.invoke_task("submission:retrieve_submissions_by_status[pending]")
     Rake.application.invoke_task("submission:retrieve_submissions_by_student_key[Robert]")
-    Rake.application.invoke_task("submission:update_sumission_status[complete]")
+    Rake.application.invoke_task("submission:update_sumission_status[output,complete]")
   end
 end
