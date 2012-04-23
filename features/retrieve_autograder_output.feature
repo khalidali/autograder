@@ -7,9 +7,9 @@ Feature: Retrieve autograder output
   Background:
   Given the test db is populated
   Given an assignment with id "1" exists
-  And I allow the following keys "" to submit to the assignment whose id is "1"
+  And I allow the following keys "[omar, yaniv]" to submit to the assignment whose id is "1"
   And I upload the grading file "" to the assignment whose id is "1"
-  And "omar" submits
+  And "omar" submits "codesupercode" to the assignment whose id is "1"
 
     Scenario: Retrieve all submission for an assignment
       When I retrieve all submissions to the assignment whose id is "1"
