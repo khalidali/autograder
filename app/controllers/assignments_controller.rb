@@ -67,6 +67,7 @@ class AssignmentsController < ApplicationController
   
   def retrieve_submissions_by_status
     @assignment = Assignment.find_by_id(params[:id])
+    @status = params[:status]
     @submissions = @assignment.submissions.find_all_by_status(params[:status])
   end
 

@@ -8,8 +8,8 @@ Feature: Retrieve autograder output
   Given the test db is populated
   Given an assignment with id "1" exists
   And I allow the following keys "[omar, yaniv]" to submit to the assignment whose id is "1"
-  And I upload the grading file "" to the assignment whose id is "1"
-  And "omar" submits "codesupercode" to the assignment whose id is "1"
+  When I upload the autograder "inst_autograder.rb" to the assignment whose id is "1"
+  And "omar" submits "student_code.rb" to the assignment whose id is "1"
 
     Scenario: Retrieve all submission for an assignment
       When I retrieve all submissions to the assignment whose id is "1"
@@ -17,13 +17,13 @@ Feature: Retrieve autograder output
       And the response should contain "All submissions"
 
     Scenario: Retrieve all pending submission for an assignment
-      When I retrieve all pending submissions to the assignment whose id is "1"
+      When I retrieve all "pending" submissions to the assignment whose id is "1"
       Then the response should be "200"
       And the response should contain "All pending submissions"
 
 
     Scenario: Retrieve all completed submission for an assignment
-      When I retrieve all pending submissions to the assignment whose id is "1"
+      When I retrieve all "completed" submissions to the assignment whose id is "1"
       Then the response should be "200"
       And the response should contain "All completed submissions"
 

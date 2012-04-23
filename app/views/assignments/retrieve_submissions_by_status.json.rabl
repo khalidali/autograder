@@ -1,4 +1,4 @@
-collection @submissions 
+collection @submissions => "All #{params[:status]} submissions"
 
 child :student do 
     attributes :student_key  
