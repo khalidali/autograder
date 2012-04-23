@@ -2,19 +2,17 @@
 namespace :db  do
   desc "create some sample assignments"
   task :populate => :environment  do
-    fake_student_keys1 = ["robert", "khalid", "ernest"]
-    fake_student_keys2 = ["omar", "yaniv"]
+    fake_student_keys1 = "robert;khalid;ernest"
+    fake_student_keys2 = "omar;yaniv"
     fake_submission = "fake_submission_code_by_" 
     
-    Assignment.create(:prof_key => "armando", :due_date =>   "01/01/1969").add_student_keys(fake_student_keys1)
-    Assignment.create(:prof_key => "patterson", :due_date => "01/01/1969").add_student_keys(fake_student_keys2)
-    Student.find_by_student_key(fake_student_keys1[0]).add_submission(fake_submission + fake_student_keys1[0])
-    Student.find_by_student_key(fake_student_keys1[1]).add_submission(fake_submission + fake_student_keys1[1])
-    Student.find_by_student_key(fake_student_keys1[2]).add_submission(fake_submission + fake_student_keys1[2])
-    Student.find_by_student_key(fake_student_keys2[0]).add_submission(fake_submission + fake_student_keys2[0])
-    Student.find_by_student_key(fake_student_keys2[1]).add_submission(fake_submission + fake_student_keys2[1])
+    Rake.application.invoke_task("assignment:create[Armando,robert;khalid;ernest,inst_autograder.rb]")
+    Rake.application.invoke_task("assignment:create[Patterson,omar;yaniv,inst_autograder.rb]")
+    Rake.application.invoke_task("submission:submit[1,robert,student_code.rb]")
+    Rake.application.invoke_task("submission:submit[1,khalid,student_code.rb]")
+    Rake.application.invoke_task("submission:submit[1,ernest,student_code.rb]")
+    Rake.application.invoke_task("submission:submit[2,omar,student_code.rb]")
+    Rake.application.invoke_task("submission:submit[2,yaniv,student_code.rb]")
     
-
-    print "database populated with sample data.\n"
   end
 end
