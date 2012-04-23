@@ -6,6 +6,6 @@ Feature: Change assignment due date
 
     Scenario: Changing assignment due date
       Given an assignment with id "1" exists
-      When I send a PUT request to "/assignments/1/change_due_date.json" with the following: "due_date=01/02/99"
+      And I change the due date of assignment 1 to 01/02/99
       Then the response should be "200"
       And the response should contain "New Due Date"

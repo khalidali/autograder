@@ -6,9 +6,9 @@ Feature: Access assignment submissions
 
     Scenario: Accessing assignment submissions
       Given an assignment with id "1" exists
-      And I send a PUT request to "/assignments/1/add_student_keys.json" with the following:"student_keys=[omar, yaniv]"
-      When "omar" submits "student_code.rb" to the assignment whose id is "1"
-      When I send a GET request for "/assignments/1/retrieve_all_submissions.json"
+      And I add the following student keys to assignment 1: omar, yaniv
+      And "omar" submits "student_code.rb" to the assignment whose id is "1"
+      When I retrieve all submissions for assignment 1
       Then the response should be "200"
       And the response should contain "omar"
       And the response should not contain "robert"

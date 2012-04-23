@@ -31,4 +31,23 @@ end
 
 
 
+And /^I add the following student keys to assignment (\d+): (.*)$/ do |id, keys|
+  step "I send a PUT request to \"/assignments/#{id}/add_student_keys.json\" with the following:\"student_keys=[#{keys}]\""
+end
+
+When /^I retrieve all submissions for assignment (\d+)$/ do |id|
+  step "I send a GET request for \"/assignments/#{id}/retrieve_all_submissions.json\""
+end
+
+When /^I change the due date of assignment (\d+) to (.*)$/ do |id, date|
+  step "I send a PUT request to \"/assignments/#{id}/change_due_date.json\" with the following: \"due_date=#{date}\""
+end
+
+When /^I create an assignment with the following: "([^"]*)"$/ do |params|
+  step "I send a POST request to \"/assignments/create.json\" with the following:\"#{params}\""
+end
+
+When /^I remove the following student keys to assignment (\d+): (.*)$/ do |id, keys|
+  step "I send a PUT request to \"/assignments/#{id}/remove_student_keys.json\" with the following:\"student_keys=#{keys}\""
+end
 

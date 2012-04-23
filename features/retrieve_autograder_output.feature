@@ -21,7 +21,6 @@ Feature: Retrieve autograder output
       Then the response should be "200"
       And the response should contain "All pending submissions"
 
-
     Scenario: Retrieve all completed submission for an assignment
       When I retrieve all "completed" submissions to the assignment whose id is "1"
       Then the response should be "200"

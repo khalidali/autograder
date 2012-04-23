@@ -6,8 +6,8 @@ Feature: Remove student keys from assignments
 
     Scenario: Removing student keys from an assignment
       Given an assignment with id "1" exists
-      And I send a PUT request to "/assignments/1/add_student_keys.json" with the following: "student_keys=[omar, yaniv]"
+      And I add the following student keys to assignment 1: omar, yaniv
       And the response should contain "Student Keys Added"
-      When I send a PUT request to "/assignments/1/remove_student_keys.json" with the following:"student_keys=[omar, yaniv]"
+      And I remove the following student keys to assignment 1: omar, yaniv
       Then the response should be "200"
       And the response should contain "Student Keys Removed"
