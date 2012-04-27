@@ -6,7 +6,6 @@ gem 'sqlite3'
 gem 'jquery-rails'
 
 gem 'rabl'
-gem 'haml'
 gem 'daemons'
 gem 'delayed_job_active_record'
 
@@ -14,8 +13,6 @@ gem 'simplecov'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', "  ~> 3.1.0"
-  gem 'coffee-rails', "~> 3.1.0"
   gem 'uglifier'
   gem 'therubyracer'
 end

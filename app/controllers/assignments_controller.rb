@@ -10,17 +10,17 @@ class AssignmentsController < ApplicationController
     end
     
     if(params[:autograder] != nil)
-      @assignment.autograder = get_file_content(params[:autograder])
+      @assignment.autograder = get_file_contents(params[:autograder])
       @assignment.save
     end
   end
   
-  def update_autograder 
-      @assignment = Assignment.find_by_id(params[:id])
-      if(params[:autograder] != nil)
-        @assignment.autograder = get_file_content(params[:autograder])
-        @assignment.save
-      end
+  def update_autograder
+    @assignment = Assignment.find_by_id(params[:id])
+    if(params[:autograder] != nil)
+      @assignment.autograder = get_file_content(params[:autograder])
+      @assignment.save
+    end
   end
 
   def add_student_keys
@@ -87,7 +87,7 @@ class AssignmentsController < ApplicationController
   
   private
     
-  def get_file_content(uploadedfile)
+  def get_file_contents(uploadedfile)
     File.open(uploadedfile.tempfile.path, "rb").read()
   end 
 end
