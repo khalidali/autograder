@@ -5,6 +5,5 @@ class Submission < ActiveRecord::Base
 
     system("./node.rb #{self.id} '#{self.student.assignment.autograder}' '#{self.body}'")
   end
-  handle_asynchronously :add_to_queue
   
 end
