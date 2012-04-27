@@ -1,5 +1,4 @@
 class AssignmentsController < ApplicationController
-
   respond_to :json
   
   def create 
@@ -14,7 +13,6 @@ class AssignmentsController < ApplicationController
       @assignment.autograder = get_file_content(params[:autograder])
       @assignment.save
     end
-    
   end
   
   def update_autograder 
@@ -91,6 +89,5 @@ class AssignmentsController < ApplicationController
     
   def get_file_content(uploadedfile)
     File.open(uploadedfile.tempfile.path, "rb").read()
-  end
-    
+  end 
 end

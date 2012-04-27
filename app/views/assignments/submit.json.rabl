@@ -4,5 +4,3 @@ if(@submission_successful)
 else
   object false => "Submission Failed, student_key not found"
 end
-
-

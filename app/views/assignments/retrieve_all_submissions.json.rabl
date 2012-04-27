@@ -5,5 +5,3 @@ child :student do
 end
 
 attributes :output, :body, :created_at
-
-

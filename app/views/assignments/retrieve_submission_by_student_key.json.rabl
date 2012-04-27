@@ -9,4 +9,3 @@ if(@student_key_valid)
 else
   object false => "Retrieval Failed, student_key not valid"
 end
-
