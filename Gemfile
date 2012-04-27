@@ -10,7 +10,7 @@ gem 'haml'
 gem 'daemons'
 gem 'delayed_job_active_record'
 gem 'redis'
-gem 'resque'
+gem 'resque', :require => "resque/server"
 
 gem 'simplecov'
 # Gems used only for assets and not required

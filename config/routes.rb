@@ -1,5 +1,8 @@
 Autograder::Application.routes.draw do
 
+
+  mount Resque::Server, :at => "/resque"
+
   match 'assignments/create' => 'assignments#create', :via => :post
   match 'assignments/:id/update_autograder' => 'assignments#update_autograder', :via => :put
   match 'assignments/:id/add_student_keys' => 'assignments#add_student_keys', :via => :put
