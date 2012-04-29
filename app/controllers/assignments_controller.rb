@@ -13,11 +13,11 @@ class AssignmentsController < ApplicationController
                                     :autograder => autograder)
                                     
     if(params[:student_keys] != nil)
-       student_keys = params[:student_keys][1..-2].split(',').each{|e| e.strip!}
+       student_keys = parse_array(params[:student_keys])
        @added_student_keys, @rejected_student_keys = @assignment.add_student_keys(student_keys)
     end
          
-    @assignment.save
+    @assignment.save()
   end
   
   def get_autograder
@@ -66,7 +66,7 @@ class AssignmentsController < ApplicationController
       render :text => 'required param \'keys\' missing.'
     else
       @assignment = Assignment.find_by_id(params[:id])
-      @students = @assignment.add_student_keys(parse_array(params[:keys])
+      @students = @assignment.add_student_keys(parse_array(params[:keys]))
       @assignment.save
     end
   end
@@ -76,7 +76,7 @@ class AssignmentsController < ApplicationController
       render :text => 'required param \'keys\' missing.'
     else
       @assignment = Assignment.find_by_id(params[:id])
-      @students = @assignment.remove_student_keys(parse_array(params[:keys])
+      @students = @assignment.remove_student_keys(parse_array(params[:keys]))
       @assignment.save
     end
   end
