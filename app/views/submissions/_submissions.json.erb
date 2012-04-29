@@ -1,5 +1,5 @@
 <% len = @submissions.length %>[
   <% @submissions.each_with_index do |submission, index| %>
     <%= render :partial => 'submissions/submission', :locals => { :submission => submission } %>
-  <% end %><% if index == len then %>,<% end %>
+  <% end %><% if index != len then %>,<% end %>
 ]
