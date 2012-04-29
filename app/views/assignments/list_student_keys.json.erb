@@ -1,0 +1,4 @@
+<% last = @students.length-1 %>
+[<% @students.each_with_index do |student, index| %>
+  <%= render :partial => 'students/student', :locals => { :student => student } %><% if index != last then %>,<% end %>
+<% end %>]
