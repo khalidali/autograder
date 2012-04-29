@@ -108,7 +108,7 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find_by_id(params[:id])
     @submissions = @assignment.submissions
     if(params[:keys])
-      @submissions = Student.find_all_by_key(parse_array(params[:keys]))
+      @submissions = Student.find_all_by_key(parse_array(params[:keys])).map{|student| student.submissions}.flat_map{|i| i}
     end
     if(params[:status])
       @submissions = @submissions.find_all_by_status(params[:status])
