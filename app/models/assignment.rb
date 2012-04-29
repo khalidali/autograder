@@ -1,4 +1,5 @@
 class Assignment < ActiveRecord::Base
+  belongs_to :professor
   has_many :students
   has_many :submissions, :through => :students
   

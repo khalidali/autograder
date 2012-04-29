@@ -1,6 +1,8 @@
 Autograder::Application.routes.draw do
 
 
+  resources :professors
+
   mount Resque::Server, :at => "/resque"
 
   match 'assignments/create' => 'assignments#create', :via => :post

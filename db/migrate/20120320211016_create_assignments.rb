@@ -4,7 +4,7 @@ class CreateAssignments < ActiveRecord::Migration
       t.time :due_date
       t.string :prof_key
       t.text :autograder
-
+      t.integer :professor_id
       t.timestamps
     end
   end
