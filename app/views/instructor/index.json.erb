@@ -1,5 +1,5 @@
-<% len = @instructors.length %>[
+<% last = @instructors.length-1 %>[
   <% @instructors.each_with_index do |instructor, index| %>
-    <%= render :partial => 'instructor', :locals => { :instructor => instructor } %>
-  <% end %><% if index != len then %>,<% end %>
+    <%= render :partial => 'instructor', :locals => { :instructor => instructor } %><% if index != last then %>,<% end %>
+  <% end %>
 ]

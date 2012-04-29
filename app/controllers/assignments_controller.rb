@@ -1,5 +1,4 @@
 class AssignmentsController < ApplicationController
-  respond_to :json
   #before_filter :authenticate_prof, :except => [:submit]
   
   def create 

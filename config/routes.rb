@@ -1,10 +1,10 @@
 Autograder::Application.routes.draw do
 
-  get "instructor/index"
+  #get "instructor/index"
 
-  get "instructor/authorize"
+  #get "instructor/authorize"
 
-  get "instructor/deauthorize"
+  #get "instructor/deauthorize"
 
   match 'assignments/create' => 'assignments#create', :via => :post
   match 'assignments/:id/update_autograder' => 'assignments#update_autograder', :via => :put
@@ -19,9 +19,9 @@ Autograder::Application.routes.draw do
   match 'submissions/:id/update_status' => 'submissions#update_status', :via => :put
   
   
-  get 'instructors(:format)' => 'instructors#index'
-  get 'instructors/authorize(:format)' => 'instructors#authorize'
-  get 'instructors/deauthorize(:format)' => 'instructors#deauthorize'
+  get 'instructors(.:format)' => 'instructor#index', :defaults => { :format => 'json' }
+  get 'instructors/authorize(.:format)' => 'instructor#authorize', :defaults => { :format => 'json' }
+  get 'instructors/deauthorize(.:format)' => 'instructor#deauthorize', :defaults => { :format => 'json' }
  
   
   #match 'assignments/:id/find_by_list_of_keys' => 'assignments#find_by_list_of_keys', :via => :get

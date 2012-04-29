@@ -11,14 +11,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120413205629) do
+ActiveRecord::Schema.define(:version => 20120429095047) do
 
   create_table "assignments", :force => true do |t|
     t.time     "due_date"
-    t.time     "late_due_date"
     t.string   "prof_key"
     t.text     "autograder"
-    t.integer  "professor_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -38,6 +36,12 @@ ActiveRecord::Schema.define(:version => 20120413205629) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "instructors", :force => true do |t|
+    t.string   "key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "students", :force => true do |t|
     t.string   "student_key"
