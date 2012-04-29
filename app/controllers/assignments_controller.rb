@@ -83,7 +83,7 @@ class AssignmentsController < ApplicationController
   
   def submit
     @assignment = Assignment.find_by_id(params[:id])
-    @student = @assignment.students.find_by_student_key(params[:student_key])
+    @student = @assignment.students.find_by_key(params[:student_key])
     if(@student != nil)    
       submission = get_file_contents(params[:submission])
       @submission = @student.add_submission(submission)
@@ -94,7 +94,7 @@ class AssignmentsController < ApplicationController
     end
   end
   
-  def retrieve_submissions_by_status
+  def retrieve_submissions
     @assignment = Assignment.find_by_id(params[:id])
     @submissions = @assignment.submissions
     if(params[:key])
@@ -119,7 +119,7 @@ class AssignmentsController < ApplicationController
   
   def retrieve_submission_by_student_key
     @assignment = Assignment.find_by_id(params[:id])
-		@student = @assignment.students.find_by_student_key(params[:student_key])
+		@student = @assignment.students.find_by_key(params[:student_key])
     if(@student != nil)
       @submissions = @student.submissions 
       @student_key_valid = true
