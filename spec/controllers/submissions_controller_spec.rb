@@ -19,7 +19,7 @@ describe SubmissionsController do
       @fake_submission.stub(:output=)
       @fake_submission.stub(:status=)
       @fake_submission.stub(:save)
-      put :update_status, {:id => "id", :status => "status", :output => @output}
+      put :update_status, {:id => "id", :status => "status", :output => @output, :format => :json}
     end
     it 'should get the file path from the params' do
       Submission.stub(:find_by_id).and_return(@fake_submission)
@@ -29,7 +29,7 @@ describe SubmissionsController do
       @fake_submission.stub(:output=)
       @fake_submission.stub(:status=)
       @fake_submission.stub(:save)
-      put :update_status, {:id => "id", :status => "status", :output => @output}
+      put :update_status, {:id => "id", :status => "status", :output => @output, :format => :json}
     end
     it 'should read the file content' do
       Submission.stub(:find_by_id).and_return(@fake_submission)
@@ -39,7 +39,7 @@ describe SubmissionsController do
       @fake_submission.stub(:output=).with(@content)
       @fake_submission.stub(:status=)
       @fake_submission.stub(:save)
-      put :update_status, {:id => "id", :status => "status", :output => @output}
+      put :update_status, {:id => "id", :status => "status", :output => @output, :format => :json}
     end
     it 'should update the output' do
       Submission.stub(:find_by_id).and_return(@fake_submission)
@@ -48,7 +48,7 @@ describe SubmissionsController do
       @fake_submission.should_receive(:output=).with(@content)
       @fake_submission.stub(:status=)
       @fake_submission.stub(:save)
-      put :update_status, {:id => "id", :status => "status", :output => @output}
+      put :update_status, {:id => "id", :status => "status", :output => @output, :format => :json}
     end
     it 'should update the status' do
       Submission.stub(:find_by_id).and_return(@fake_submission)
@@ -57,7 +57,7 @@ describe SubmissionsController do
       @fake_submission.stub(:output=)
       @fake_submission.should_receive(:status=).with("status")
       @fake_submission.stub(:save)
-      put :update_status, {:id => "id", :status => "status", :output => @output}
+      put :update_status, {:id => "id", :status => "status", :output => @output, :format => :json}
     end 
     it 'should save the submission' do
       Submission.stub(:find_by_id).and_return(@fake_submission)
@@ -66,7 +66,7 @@ describe SubmissionsController do
       @fake_submission.stub(:output=)
       @fake_submission.stub(:status=)
       @fake_submission.should_receive(:save)
-      put :update_status, {:id => "id", :status => "status", :output => @output}
+      put :update_status, {:id => "id", :status => "status", :output => @output, :format => :json}
     end
     it 'should render the update_status template' do
       Submission.stub(:find_by_id).and_return(@fake_submission)
@@ -75,7 +75,7 @@ describe SubmissionsController do
       @fake_submission.stub(:output=)
       @fake_submission.stub(:status=).with("status")
       @fake_submission.stub(:save)
-      put :update_status, {:id => "id", :status => "status", :output => @output}
+      put :update_status, {:id => "id", :status => "status", :output => @output, :format => :json}
       response.should render_template("update_status")
     end   
   end

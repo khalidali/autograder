@@ -4,21 +4,21 @@ describe InstructorController do
 
   describe "GET 'index'" do
     it "returns http success" do
-      get 'index'
+      get 'index', :format => :json
       response.should be_success
     end
   end
 
   describe "GET 'authorize'" do
     it "returns http success" do
-      get 'authorize'
+      get 'authorize', :format => :json
       response.should be_success
     end
   end
 
   describe "GET 'deauthorize'" do
     it "returns http success" do
-      get 'deauthorize'
+      get 'deauthorize', :format => :json
       response.should be_success
     end
   end
