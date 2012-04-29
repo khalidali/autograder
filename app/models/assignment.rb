@@ -33,6 +33,10 @@ class Assignment < ActiveRecord::Base
     self.due_date = due_date
   end
   
+  def change_late_due_date(late_due_date)
+    self.late_due_date = late_due_date
+  end
+  
   def has_student_key?(student_key)
     self.students.find_by_key(student_key)
   end
