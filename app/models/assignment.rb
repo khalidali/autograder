@@ -2,9 +2,9 @@ class Assignment < ActiveRecord::Base
   has_many :students
   has_many :submissions, :through => :students
   
-  def add_student_keys(student_keys)
+  def add_student_keys(keys)
     output_hash = Hash.new
-    student_keys.each do |std_key|
+    keys.each do |std_key|
       if self.students.find_by_key(std_key) 
         output_hash[std_key] = "ERROR: key already exists."
       else
@@ -15,9 +15,9 @@ class Assignment < ActiveRecord::Base
     return output_hash
   end
   
-  def remove_student_keys(student_keys)
+  def remove_student_keys(keys)
     output_hash = Hash.new
-    student_keys.each do |std_key|
+    keys.each do |std_key|
       student = self.students.find_by_key(std_key)
       if student
         student.destroy()
