@@ -8,6 +8,10 @@ class ApplicationController < ActionController::Base
     array[1..-2].split(',').each { |e| e.strip! }
   end
   
+  def is_assignment?(id)
+    Assignment.find id
+  end
+  
   def is_instructor?(key)
     Instructor.find_by_key key
   end

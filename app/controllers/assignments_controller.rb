@@ -2,7 +2,7 @@ class AssignmentsController < ApplicationController
   #before_filter :authenticate_prof, :except => [:submit]
   
   def create 
-    due_date = params[:due_date].to_time unless params[:dua_date] == nil or is_valid_date?(params[:due_date])  
+    due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date])  
     late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or is_valid_date?(params[:late_due_date])         
     autograder = get_file_contents(params[:autograder]) unless params[:autograder] == nil
 
@@ -20,39 +20,65 @@ class AssignmentsController < ApplicationController
     @assignment.save
   end
   
-  def update_autograder
+  def get_autograder
+    @assignment = Assignment.find_by_id(params[:id])
+  end
+  
+  def set_autograder
     @assignment = Assignment.find_by_id(params[:id])
     if(params[:autograder] != nil)
       @assignment.autograder = get_file_contents(params[:autograder])
       @assignment.save
     end
   end
-
-  def add_student_keys
-    @assignment = Assignment.find_by_id(params[:id])
-    if(params[:student_keys] != nil)
-       @student_keys = params[:student_keys][1..-2].split(',').each{|e| e.strip!}
-       @added_student_keys, @rejected_student_keys = @assignment.add_student_keys(@student_keys)
-	     @assignment.save
-    end
-  end
   
-  def remove_student_keys
-    @assignment = Assignment.find_by_id(params[:id])
-
-    if(params[:student_keys] != nil)
-       @student_keys = params[:student_keys][1..-2].split(',').each{|e| e.strip!}
-       @assignment.remove_student_keys(@student_keys)
-	     @assignment.save
-    end
-  end
-  
-  def change_due_date
+  def change_due_date #REMOVE
     @assignment = Assignment.find_by_id(params[:id])
     if(params[:due_date] != nil)
       @assignment.change_due_date(params[:due_date])
       @assignment.save
     end 
+  end
+  
+  def get_due_date
+  end
+  
+  def set_due_date
+  end
+  
+  def get_late_due_date
+  end
+  
+  def set_late_due_date
+  end
+  
+  def list_student_keys
+    @assignment = Assignment.find_by_id(params[:id])
+    if not @assignment then
+      render :text => 'ERROR: assignment does not exist'
+    else
+      @students = @assignment.students
+    end
+  end
+  
+  def add_student_keys
+    if not [:keys] 
+      render :text => 'required param \'keys\' missing.'
+    else
+      @assignment = Assignment.find_by_id(params[:id])
+      @students = @assignment.add_student_keys(parse_array(params[:keys])
+      @assignment.save
+    end
+  end
+  
+  def remove_student_keys
+    if not [:keys] 
+      render :text => 'required param \'keys\' missing.'
+    else
+      @assignment = Assignment.find_by_id(params[:id])
+      @students = @assignment.remove_student_keys(parse_array(params[:keys])
+      @assignment.save
+    end
   end
   
   def submit
@@ -66,6 +92,18 @@ class AssignmentsController < ApplicationController
     else
       @submission_successful = false
     end
+  end
+  
+  def retrieve_submissions_by_status
+    @assignment = Assignment.find_by_id(params[:id])
+    @submissions = @assignment.submissions
+    if(params[:key])
+      @submissions = @submissions
+    end
+    if(params[:status])
+      @submissions = @submissions.find_all_by_status(params[:status])
+    end
+
   end
   
   def retrieve_submissions_by_status
