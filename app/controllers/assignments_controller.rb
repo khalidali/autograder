@@ -55,7 +55,7 @@ class AssignmentsController < ApplicationController
     @student = @assignment.students.find_by_student_key(params[:student_key])
     if(@student != nil)    
       submission = get_file_contents(params[:submission])
-      @student.add_submission(submission)
+      @submission = @student.add_submission(submission)
       @student.save()
       @submission_successful = true
     else

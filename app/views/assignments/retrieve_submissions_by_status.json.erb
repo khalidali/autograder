@@ -1,8 +1,1 @@
-{
-  "status" : "All #{params[:status]} submissions."
-  "data" : {
-             <% @submissions.each do |submission| %>
-               <%= render :partial => 'submissions/submission', :locals => { :submission => submission } %>
-             <% end %>
-           }
-}
+<%= render :partial => 'submissions/submissions', :locals => { :submissions => @submissions } %>

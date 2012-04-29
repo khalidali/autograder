@@ -6,5 +6,6 @@ class Student < ActiveRecord::Base
     new_submission = Submission.create!(:body => submission, :status => "pending")
     self.submissions << new_submission
     new_submission.add_to_queue
+    return new_submission
   end
 end
