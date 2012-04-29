@@ -1,0 +1,5 @@
+<% len = @instructors.length %>[
+  <% @instructors.each_with_index do |instructor, index| %>
+    <%= render :partial => 'instructor', :locals => { :instructor => instructor } %>
+  <% end %><% if index != len then %>,<% end %>
+]

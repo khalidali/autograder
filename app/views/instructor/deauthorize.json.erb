@@ -1,0 +1,5 @@
+<% len = @instructors.length %>[
+  <% @instructors.each_with_index do |instructor, index| %>
+    { "key" : instructor.key }
+  <% end %><% if index != len then %>,<% end %>
+]
