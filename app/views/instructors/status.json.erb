@@ -1,0 +1,5 @@
+<% last = @instructors.keys.length-1 %>[
+  <% @instructors.keys.each_with_index do |key, index| %>
+    { "<%= key %>" : "<%= @instructors[key] %>" }
+  <% if index != last then %>,<% end %><% end %>
+]
