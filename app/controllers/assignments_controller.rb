@@ -1,18 +1,24 @@
 class AssignmentsController < ApplicationController
   respond_to :json
+  #before_filter :authenticate_prof, :except => [:submit]
   
   def create 
-    @assignment = Assignment.create(:prof_key => params[:prof_key], :due_date => params[:due_date])
+    due_date = params[:due_date].to_time unless params[:dua_date] == nil or is_valid_date?(params[:due_date])  
+    late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or is_valid_date?(params[:late_due_date])         
+    autograder = get_file_contents(params[:autograder]) unless params[:autograder] == nil
+
+    
+    @assignment = Assignment.create(:prof_key => params[:prof_key], 
+                                    :due_date => due_date, 
+                                    :late_due_date => late_due_date,
+                                    :autograder => autograder)
+                                    
     if(params[:student_keys] != nil)
        student_keys = params[:student_keys][1..-2].split(',').each{|e| e.strip!}
-       @assignment.add_student_keys(student_keys)
-  	   @assignment.save
+       @added_student_keys, @rejected_student_keys = @assignment.add_student_keys(student_keys)
     end
-    
-    if(params[:autograder] != nil)
-      @assignment.autograder = get_file_contents(params[:autograder])
-      @assignment.save
-    end
+         
+    @assignment.save
   end
   
   def update_autograder
@@ -27,7 +33,7 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find_by_id(params[:id])
     if(params[:student_keys] != nil)
        @student_keys = params[:student_keys][1..-2].split(',').each{|e| e.strip!}
-       @assignment.add_student_keys(@student_keys)
+       @added_student_keys, @rejected_student_keys = @assignment.add_student_keys(@student_keys)
 	     @assignment.save
     end
   end
@@ -89,5 +95,14 @@ class AssignmentsController < ApplicationController
     
   def get_file_contents(uploadedfile)
     File.open(uploadedfile.tempfile.path, "rb").read()
+  end
+  
+  def is_valid_date?(date)
+    date =~ /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}( -[0-9]{4})?$/
+  end
+  
+  def authenticate_prof
+    return True 
+    #Professor.find_by_prof_key(params[:prof_key])
   end 
 end

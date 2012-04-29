@@ -6,7 +6,7 @@ namespace :assignment  do
     student = "#{args[:student_keys]}".gsub(/[;]/, ',')
     
     puts "Rake Task: Creates an assignment with given arguments"
-    a = `curl -s -X POST /dev/null localhost:3000/assignments/create.json -F "prof_key=Armando" -F "student_keys=[#{student}]" -F autograder=@#{autograder + args[:autograder]} 2>&1`
+    a = `curl -s -X POST /dev/null localhost:3000/assignments/create.json -F "prof_key=#{args[:prof_key]}" -F "student_keys=[#{student}]" -F autograder=@#{autograder + args[:autograder]} 2>&1`
     puts a
   end
   
