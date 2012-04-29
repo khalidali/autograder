@@ -1,1 +1,4 @@
-<%= render :partial => 'assignment', :locals => { :assignment => @assignment } %>
+<% last = @students.keys.length-1 %>
+[<% @students.keys.each_with_index do |key, index| %>
+  { "<%= key %>" : "<%= @students[key] %>" }
+<% if index != last then %>,<% end %><% end %>]
