@@ -1,6 +1,4 @@
 {
   "status" : "New Due Date."
-  "data" : {
-             "due_date" : "<%= @assignment.due_date %>"
-           }
+  "data" : <%= render :partial => 'assignment', :locals => { :assignment => @assignment } %>
 }

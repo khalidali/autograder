@@ -1,7 +1,4 @@
 {
   "status" : "AutoGrader Updated."
-  "data" : {
-             "id" : "<%= @assignment.id %>"
-             "updated_at" : "<%= @assignment.updated_at %>"
-           }
+  "data" : <%= render :partial => 'assignment', :locals => { :assignment => @assignment } %>
 }

@@ -1,7 +1,8 @@
-collection @submissions => "All submissions"
-
-child :student do 
-    attributes :student_key  
-end
-
-attributes :output, :body, :created_at
+{
+  "status" : "All submissions."
+  "data" : {
+             <% @submissions.each do |submission| %>
+               <%= render :partial => 'submissions/submission', :locals => { :submission => submission } %>
+             <% end %>
+           }
+}

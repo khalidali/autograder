@@ -1,6 +1,10 @@
-if(@submission_successful) 
-  object @student => "Submission Successful"
-  attributes :student_key
-else
-  object false => "Submission Failed, student_key not found"
-end
+<% if(@submission_successful) then %>
+{
+  "status" : "Submission Successful."
+  "student_key" : "<%= @student.student_key =%>"
+}
+<% else %>
+{
+  "status" : "Submission Failed, student_key not found."
+}
+<% end %>

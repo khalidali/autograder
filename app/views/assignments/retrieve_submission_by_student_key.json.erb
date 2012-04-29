@@ -1,11 +1,14 @@
-if(@student_key_valid)
-  collection @submissions 
-
-  child :student do 
-      attributes :student_key  
-  end
-
-  attributes :output, :body, :created_at
-else
-  object false => "Retrieval Failed, student_key not valid"
-end
+<% if(@submission_successful) then %>
+{
+  "status" : "All submissions."
+  "data" : {
+             <% @submissions.each do |submission| %>
+               <%= render :partial => 'submissions/submission', :locals => { :submission => submission } %>
+             <% end %>
+           }
+}
+<% else %>
+{
+  "status" : "Retrieval Failed, student_key not valid."
+}
+<% end %>

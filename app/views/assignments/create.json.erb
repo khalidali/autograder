@@ -1,6 +1,4 @@
 {
   "status" : "Assignment Created."
-  "data" : {
-             "id" : "<%= @assignment.id %>"
-           }
+  "data" : <%= render :partial => 'assignment', :locals => { :assignment => @assignment } %>
 }
