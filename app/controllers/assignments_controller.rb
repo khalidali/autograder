@@ -1,5 +1,4 @@
 class AssignmentsController < ApplicationController
-
   respond_to :json
   
   def create 
@@ -11,18 +10,17 @@ class AssignmentsController < ApplicationController
     end
     
     if(params[:autograder] != nil)
-      @assignment.autograder = get_file_content(params[:autograder])
+      @assignment.autograder = get_file_contents(params[:autograder])
       @assignment.save
     end
-    
   end
   
-  def update_autograder 
-      @assignment = Assignment.find_by_id(params[:id])
-      if(params[:autograder] != nil)
-        @assignment.autograder = get_file_content(params[:autograder])
-        @assignment.save
-      end
+  def update_autograder
+    @assignment = Assignment.find_by_id(params[:id])
+    if(params[:autograder] != nil)
+      @assignment.autograder = get_file_contents(params[:autograder])
+      @assignment.save
+    end
   end
 
   def add_student_keys
@@ -56,8 +54,8 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find_by_id(params[:id])
     @student = @assignment.students.find_by_student_key(params[:student_key])
     if(@student != nil)    
-      submission = get_file_content(params[:submission])
-      @student.add_submission(submission)
+      submission = get_file_contents(params[:submission])
+      @submission = @student.add_submission(submission)
       @student.save()
       @submission_successful = true
     else
@@ -89,8 +87,7 @@ class AssignmentsController < ApplicationController
   
   private
     
-  def get_file_content(uploadedfile)
+  def get_file_contents(uploadedfile)
     File.open(uploadedfile.tempfile.path, "rb").read()
-  end
-    
+  end 
 end

@@ -25,5 +25,3 @@ Feature: Retrieve autograder output
       When I retrieve all "completed" submissions to the assignment whose id is "1"
       Then the response should be "200"
       And the response should contain "All completed submissions"
-
-

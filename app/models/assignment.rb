@@ -1,5 +1,4 @@
 class Assignment < ActiveRecord::Base
-
   has_many :students
   has_many :submissions, :through => :students
   
@@ -14,7 +13,4 @@ class Assignment < ActiveRecord::Base
   def change_due_date(due_date)
     self.due_date = due_date
   end
-  
-  
-  
 end

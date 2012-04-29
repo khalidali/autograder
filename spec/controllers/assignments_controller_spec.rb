@@ -8,28 +8,28 @@ describe AssignmentsController do
       @fake_assignment = mock(:assignment)
     end
     it 'should create an Assignment instance with the given parameters' do
-      Assignment.should_receive(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+      Assignment.should_receive(:create).with(:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late").and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "due_date", :student_keys => "[s_key1, s_key2]"}
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late", :student_keys => "[s_key1, s_key2]"}
     end
 		it 'should add a list of student keys to the newly created assignment' do
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.should_receive(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "due_date", :student_keys => "[s_key1, s_key2]"}
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late", :student_keys => "[s_key1, s_key2]"}
 		end
 		it 'should save the assignment' do
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.should_receive(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "due_date", :student_keys => "[s_key1, s_key2]"}
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late", :student_keys => "[s_key1, s_key2]"}
 		end
 		it 'should render the create template' do
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-			post :create, {:prof_key => "prof_key", :due_date => "due_date", :student_keys => "[s_key1, s_key2]"}
+			post :create, {:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late", :student_keys => "[s_key1, s_key2]"}
 			response.should render_template('create')
 		end
   end
@@ -43,54 +43,54 @@ describe AssignmentsController do
       @file = mock(:file)
     end
     it 'should create an Assignment instance with the given parameters' do
-      Assignment.should_receive(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+      Assignment.should_receive(:create).with(:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late").and_return(@fake_assignment)
       @autograder.stub_chain(:tempfile, :path)
       File.stub_chain(:open, :read)
       @fake_assignment.stub(:autograder=)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late", :autograder => @autograder}
     end
     it 'should get the file path from the params' do
-			Assignment.stub(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+			Assignment.stub(:create).and_return(@fake_assignment)
 			@autograder.should_receive(:tempfile).and_return(@file)
       @file.should_receive(:path).and_return(@path)
       File.stub_chain(:open, :read)
       @fake_assignment.stub(:autograder=)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late", :autograder => @autograder}
 		end
 		it 'should read the file content' do
-			Assignment.stub(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+			Assignment.stub(:create).and_return(@fake_assignment)
 			@autograder.stub_chain(:tempfile, :path)
       File.should_receive(:open).and_return(@file)
       @file.should_receive(:read).and_return(@content)
       @fake_assignment.stub(:autograder=).with(@content)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late", :autograder => @autograder}
 		end
 		it 'should add an autograder to the assignment' do
-			Assignment.stub(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+			Assignment.stub(:create).and_return(@fake_assignment)
 			@autograder.stub_chain(:tempfile, :path)
       File.stub_chain(:open, :read).and_return(@content)
       @fake_assignment.should_receive(:autograder=).with(@content)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late", :autograder => @autograder}
 		end
 		it 'should save the assignment' do
-			Assignment.stub(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+			Assignment.stub(:create).and_return(@fake_assignment)
 			@autograder.stub_chain(:tempfile, :path)
       File.stub_chain(:open, :read)
       @fake_assignment.stub(:autograder=)
       @fake_assignment.should_receive(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late", :autograder => @autograder}
 		end
 		it 'should render the create template' do
-			Assignment.stub(:create).with(:prof_key => "prof_key", :due_date => "due_date").and_return(@fake_assignment)
+			Assignment.stub(:create).and_return(@fake_assignment)
 			@autograder.stub_chain(:tempfile, :path)
       File.stub_chain(:open, :read)
       @fake_assignment.stub(:autograder=)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "due_date", :autograder => @autograder}
+      post :create, {:prof_key => "prof_key", :due_date => "due_date", :late_due_date => "late", :autograder => @autograder}
 			response.should render_template('create')
 		end
   end
@@ -252,6 +252,39 @@ describe AssignmentsController do
 			response.should render_template('change_due_date')
 		end
   end
+
+	################ change_late_due_date ###########
+  describe "Change late due date for assignment" do
+    before(:each) do
+      @fake_assignment = mock(:assignment)
+    end
+    it 'should find an assignment' do
+      Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
+      @fake_assignment.stub(:change_late_due_date)
+      @fake_assignment.stub(:save)
+      put :change_late_due_date, {:id => "id", :late_due_date=> "04/18/2012"}
+    end
+		it 'should change the due date' do 
+      Assignment.stub(:find_by_id).and_return(@fake_assignment)
+      @fake_assignment.should_receive(:change_late_due_date).with("04/18/2012")
+      @fake_assignment.stub(:save)
+      put :change_late_due_date, {:id => "id", :late_due_date=> "04/18/2012"}
+    end
+		it 'should save the assignment' do
+			Assignment.stub(:find_by_id).and_return(@fake_assignment)
+      @fake_assignment.stub(:change_late_due_date)
+      @fake_assignment.should_receive(:save)
+      put :change_late_due_date, {:id => "id", :late_due_date=> "04/18/2012"}
+		end
+		it 'should render the change due date template' do
+			Assignment.stub(:find_by_id).and_return(@fake_assignment)
+      @fake_assignment.stub(:change_late_due_date)
+      @fake_assignment.stub(:save)
+			put :change_late_due_date, {:id => "id", :late_due_date=> "04/18/2012"}
+			response.should render_template('change_late_due_date')
+		end
+  end
+
   
 	############### submit ###################
 	describe "Submit Assignment" do
@@ -350,6 +383,8 @@ describe AssignmentsController do
 			response.should render_template('submit')
 		end
 	end
+
+
 
 	############# retrieve_submissions_by_status ############
   describe "Retreive list of submissions by grading status" do

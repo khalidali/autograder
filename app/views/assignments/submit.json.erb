@@ -1,0 +1,7 @@
+<% if(@submission_successful) then %>
+  <%= render :partial => 'submissions/submission', :locals => { :submission => @submission } %>
+<% else %>
+{
+  "status" : "Submission Failed, student_key not found."
+}
+<% end %>
