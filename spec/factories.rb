@@ -8,7 +8,7 @@ end
 
 
 Factory.define :student do |s|
-    s.student_key  'key'
+    s.key  'key'
     s.assignment_id '1'
     s.created_at baseTime
     s.updated_at baseTime
@@ -17,8 +17,8 @@ end
 Factory.define :submission do |su|
     su.body 'submission1'
     su.output 'great'
-    su.status 'A'
+    su.status 'pending'
     su.student_id '1'
-    su.create_at baseTime
+    su.created_at baseTime
     su.updated_at baseTime
 end

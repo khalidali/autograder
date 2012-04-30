@@ -20,6 +20,7 @@ group :assets do
 end
 
 group :test, :development do
+  gem 'resque_spec'
   gem 'rspec-rails'
   gem 'factory_girl', '2.2.0'
   gem 'cucumber-rails-training-wheels' # some pre-fabbed step definitions  
