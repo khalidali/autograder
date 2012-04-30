@@ -5,7 +5,7 @@ class Student < ActiveRecord::Base
   def add_submission(submission)
     new_submission = Submission.create!(:body => submission, :status => "pending")
     self.submissions << new_submission
-    new_submission.add_to_queue
+    Resque.enqueue(SubmissionGrader, new_submission.id)
     return new_submission
   end
 end

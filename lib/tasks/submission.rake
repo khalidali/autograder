@@ -1,9 +1,9 @@
 namespace :submission  do
   desc "To submit an assignment with a student_key"
-  task :submit, [:id, :student_key, :submission] => [:environment] do |t, args|
+  task :submit, [:id, :key, :submission] => [:environment] do |t, args|
     puts "Rake Task: To submit an assignment with a student_key"
     submission = Rails.root + "test/fixtures"
-    a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit.json -F submission=@#{submission + args[:submission]} -F "student_key=#{args[:student_key]}" 2>&1`
+    a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit.json -F submission=@#{submission + args[:submission]} -F "key=#{args[:key]}" 2>&1`
     puts a
   end
 
@@ -24,11 +24,11 @@ namespace :submission  do
   end
 
   desc "To retrieve submissions by student_key"
-  task :retrieve_submissions_by_student_key, [:id, :student_key]  => [:environment] do |t, args|
-    student_key = "#{args[:student_key]}".gsub(/[;]/, ',')
+  task :retrieve_submissions_by_student_key, [:id, :key]  => [:environment] do |t, args|
+    key = "#{args[:key]}".gsub(/[;]/, ',')
     
     puts "Rake Task: To retrieve submissions by student_key"
-    a = `curl -s -X GET  -d "student_key="#{student_key}"" /dev/null localhost:3000/assignments/#{args[:id]}/retrieve_submission_by_student_key.json 2>&1`
+    a = `curl -s -X GET  -d "key="#{key}"" /dev/null localhost:3000/assignments/#{args[:id]}/retrieve_submission_by_student_key.json 2>&1`
     puts a
   end
   
