@@ -29,6 +29,8 @@ class AssignmentsController < ApplicationController
     if(params[:autograder] != nil)
       @assignment.autograder = get_file_contents(params[:autograder])
       @assignment.save
+    else
+      render :text => 'invalid or missing param \'autograder\'.'
     end
   end
   
