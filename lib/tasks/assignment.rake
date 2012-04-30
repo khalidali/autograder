@@ -9,25 +9,60 @@ namespace :assignment  do
     a = `curl -s -X POST /dev/null localhost:3000/assignments/create.json -F "prof_key=#{args[:prof_key]}" -F "student_keys=[#{student}]" -F autograder=@#{autograder + args[:autograder]} 2>&1`
     puts a
   end
+
+  desc "To set the autograder"
+  task :set_autograder, [:id, :autograder] => [:environment] do |t, args|
+    root = Rails.root + "test/fixtures" 
+    
+    puts "Rake Task: To update the autograder"
+    a = `curl -s -X PUT -F autograder=@#{root + args[:autograder]} /dev/null localhost:3000/assignments/#{args[:id]}/autograder 2>&1`
+    puts a
+  end
+  desc "To get the autograder"
+  task :get_autograder, [:id] => [:environment] do |t, args|
+    root = Rails.root + "test/fixtures" 
+    
+    puts "Rake Task: To update the autograder"
+    a = `curl -s -X GET /dev/null localhost:3000/assignments/#{args[:id]}/autograder 2>&1`
+    puts a
+  end
   
-  desc"To change due date of an assignment"
+  desc"To set the due date of an assignment"
   task :set_due_date, [:id, :date] => [:environment] do |t, args|
     root = Rails.root 
     
     puts "Rake Task: To change due date of an assignment"
-    a = `curl -s -X PUT -d "due_date=#{args[:date]}" /dev/null localhost:3000/assignments/#{args[:id]}/due_date.json 2>&1`
+    a = `curl -s -X PUT -d "due_date=#{args[:date]}" /dev/null localhost:3000/assignments/#{args[:id]}/due_date 2>&1`
     puts a
   end
   
-  desc"To get due date of an assignment"
+  desc"To get the due date of an assignment"
   task :get_due_date, [:id] => [:environment] do |t, args|
     root = Rails.root 
     
     puts "Rake Task: To change due date of an assignment"
-    a = `curl -s -X GET /dev/null localhost:3000/assignments/#{args[:id]}/due_date.json 2>&1`
+    a = `curl -s -X GET /dev/null localhost:3000/assignments/#{args[:id]}/due_date 2>&1`
+    puts a
+  end
+
+  desc"To set the late_duedate of an assignment"
+  task :set_late_due_date, [:id, :date] => [:environment] do |t, args|
+    root = Rails.root 
+    
+    puts "Rake Task: To change due date of an assignment"
+    a = `curl -s -X PUT -d "due_date=#{args[:date]}" /dev/null localhost:3000/assignments/#{args[:id]}/late_due_date 2>&1`
     puts a
   end
   
+  desc"To get the late_duedate of an assignment"
+  task :get_late_due_date, [:id] => [:environment] do |t, args|
+    root = Rails.root 
+    
+    puts "Rake Task: To change due date of an assignment"
+    a = `curl -s -X GET /dev/null localhost:3000/assignments/#{args[:id]}/late_due_date 2>&1`
+    puts a
+  end
+
   desc"To list student keys"
   task :list_student_keys, [:id] => [:environment] do |t, args|
     root = Rails.root 
@@ -57,21 +92,6 @@ namespace :assignment  do
     puts a
   end
 
-  desc "To set the autograder"
-  task :set_autograder, [:id, :autograder] => [:environment] do |t, args|
-    root = Rails.root + "test/fixtures" 
-    
-    puts "Rake Task: To update the autograder"
-    a = `curl -s -X PUT -F autograder=@#{root + args[:autograder]} /dev/null localhost:3000/assignments/#{args[:id]}/autograder 2>&1`
-    puts a
-  end
-  desc "To get the autograder"
-  task :get_autograder, [:id] => [:environment] do |t, args|
-    root = Rails.root + "test/fixtures" 
-    
-    puts "Rake Task: To update the autograder"
-    a = `curl -s -X GET /dev/null localhost:3000/assignments/#{args[:id]}/autograder 2>&1`
-    puts a
-  end
+
   
 end
