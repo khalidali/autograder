@@ -52,7 +52,7 @@ class AssignmentsController < ApplicationController
   end
   
   def set_late_due_date
-      late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or is_valid_date?(params[:late_due_date]) 
+    late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or is_valid_date?(params[:late_due_date]) 
     if(late_due_date != nil)
       @assignment.change_late_due_date(late_due_date)
       @assignment.save
@@ -88,9 +88,9 @@ class AssignmentsController < ApplicationController
     @student = @assignment.students.find_by_key params[:key]
     if not @student and not params[:submission] then
       render :text => 'ERROR: student key doesn\'t exist and required param \'submission\' missing.'
-    else if not @student then
+    elsif not @student then
       render :text => 'ERROR: student key doesn\'t exist.'
-    else if not params[:submission] then
+    elsif not params[:submission] then
       render :text => 'ERROR: required param \'submission\' missing.'
     else
       submission = get_file_contents(params[:submission])
@@ -126,8 +126,8 @@ class AssignmentsController < ApplicationController
   end
    
   def find_assignment
-  @assignment = Assignment.find_by_id(params[:id])
-  if not @assignment then
+    @assignment = Assignment.find_by_id(params[:id])
+    if not @assignment then
       render :text => 'ERROR: assignment does not exist' 
     end 
   end 
