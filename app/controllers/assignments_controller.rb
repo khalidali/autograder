@@ -64,16 +64,16 @@ class AssignmentsController < ApplicationController
   end
   
   def add_student_keys
-    if not [:keys] 
+    if(params[:keys] == nil) 
       render :text => 'required param \'keys\' missing.'
     else
-          @students = @assignment.add_student_keys(parse_array(params[:keys]))
+      @students = @assignment.add_student_keys(parse_array(params[:keys]))
       @assignment.save
     end
   end
   
   def remove_student_keys
-    if not [:keys] 
+    if not params[:keys] 
       render :text => 'required param \'keys\' missing.'
     else
       @students = @assignment.remove_student_keys(parse_array(params[:keys]))
