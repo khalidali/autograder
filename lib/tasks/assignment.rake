@@ -43,7 +43,7 @@ namespace :assignment  do
     
     puts "Rake Task: To remove student keys"
     student = "#{args[:student_keys]}".gsub(/[;]/, ',')
-    a = `curl -s -X PUT -d "student_keys=[#{student}]" /dev/null localhost:3000/assignments/#{args[:id]}/student_keys/remove 2>&1`
+    a = `curl -s -X PUT -d "keys=[#{student}]" /dev/null localhost:3000/assignments/#{args[:id]}/student_keys/remove 2>&1`
     puts a
   end
 
@@ -53,7 +53,7 @@ namespace :assignment  do
     
     puts "Rake Task: To add student keys"
     student = "#{args[:keys]}".gsub(/[;]/, ',')
-    a = `curl -s -X PUT -d "student_keys=[#{student}]" /dev/null localhost:3000/assignments/#{args[:id]}/student_keys/add 2>&1`
+    a = `curl -s -X PUT -d "keys=[#{student}]" /dev/null localhost:3000/assignments/#{args[:id]}/student_keys/add 2>&1`
     puts a
   end
 
