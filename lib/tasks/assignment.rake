@@ -11,34 +11,53 @@ namespace :assignment  do
   end
   
   desc"To change due date of an assignment"
-  task :change_due_date, [:id, :date] => [:environment] do |t, args|
+  task :set_due_date, [:id, :date] => [:environment] do |t, args|
     root = Rails.root 
     
     puts "Rake Task: To change due date of an assignment"
-    a = `curl -s -X PUT -d "due_date=#{args[:date]}" /dev/null localhost:3000/assignments/#{args[:id]}/change_due_date.json 2>&1`
+    a = `curl -s -X PUT -d "due_date=#{args[:date]}" /dev/null localhost:3000/assignments/#{args[:id]}/due_date.json 2>&1`
     puts a
   end
-
-  desc"To add student keys"
-  task :add_student_keys, [:id, :student_keys] => [:environment] do |t, args|
+  
+  desc"To get due date of an assignment"
+  task :get_due_date, [:id] => [:environment] do |t, args|
     root = Rails.root 
     
-    puts "Rake Task: To add student keys"
-    student = "#{args[:student_keys]}".gsub(/[;]/, ',')
-    a = `curl -s -X PUT -d "student_keys=[#{student}]" /dev/null localhost:3000/assignments/#{args[:id]}/add_student_keys.json 2>&1`
+    puts "Rake Task: To change due date of an assignment"
+    a = `curl -s -X GET /dev/null localhost:3000/assignments/#{args[:id]}/due_date.json 2>&1`
     puts a
   end
-
+  
+  desc"To list student keys"
+  task :list_student_keys, [:id] => [:environment] do |t, args|
+    root = Rails.root 
+    
+    puts "Rake Task: To list student keys"
+    a = `curl -s -X GET  /dev/null localhost:3000/assignments/#{args[:id]}/student_keys 2>&1`
+    puts a
+  end
+  
   desc"To remove student keys"
-  task :remove_student_keys, [:id, :student_keys] => [:environment] do |t, args|
+  task :remove_student_keys, [:id, :keys] => [:environment] do |t, args|
     root = Rails.root 
     
     puts "Rake Task: To remove student keys"
     student = "#{args[:student_keys]}".gsub(/[;]/, ',')
-    a = `curl -s -X PUT -d "student_keys=[#{student}]" /dev/null localhost:3000/assignments/#{args[:id]}/remove_student_keys.json 2>&1`
+    a = `curl -s -X PUT -d "student_keys=[#{student}]" /dev/null localhost:3000/assignments/#{args[:id]}/student_keys/remove 2>&1`
     puts a
   end
-  
+
+  desc"To add student keys"
+  task :add_student_keys, [:id, :keys] => [:environment] do |t, args|
+    root = Rails.root 
+    
+    puts "Rake Task: To add student keys"
+    student = "#{args[:keys]}".gsub(/[;]/, ',')
+    a = `curl -s -X PUT -d "student_keys=[#{student}]" /dev/null localhost:3000/assignments/#{args[:id]}/student_keys/add 2>&1`
+    puts a
+  end
+
+
   desc "To update the autograder"
   task :update_autograder, [:id, :autograder] => [:environment] do |t, args|
     root = Rails.root + "test/fixtures" 

@@ -1,5 +1,6 @@
 class AssignmentsController < ApplicationController
   #before_filter :authenticate_prof, :except => [:submit]
+  before_filter :find_assignment, :except => [:create]
   
   def create 
     due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date])  
@@ -21,11 +22,9 @@ class AssignmentsController < ApplicationController
   end
   
   def get_autograder
-    @assignment = Assignment.find_by_id(params[:id])
   end
   
   def set_autograder
-    @assignment = Assignment.find_by_id(params[:id])
     if(params[:autograder] != nil)
       @assignment.autograder = get_file_contents(params[:autograder])
       @assignment.save
@@ -35,12 +34,10 @@ class AssignmentsController < ApplicationController
   end
   
   def get_due_date
-    @assignment = Assignment.find_by_id(params[:id])
   end
   
   def set_due_date
-    @assignment = Assignment.find_by_id(params[:id])
-    due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date]) 
+      due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date]) 
     if(due_date != nil)
       @assignment.change_due_date(due_date)
       @assignment.save
@@ -50,12 +47,10 @@ class AssignmentsController < ApplicationController
   end
   
   def get_late_due_date
-    @assignment = Assignment.find_by_id(params[:id])
   end
   
   def set_late_due_date
-    @assignment = Assignment.find_by_id(params[:id])
-    late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or is_valid_date?(params[:late_due_date]) 
+      late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or is_valid_date?(params[:late_due_date]) 
     if(late_due_date != nil)
       @assignment.change_late_due_date(late_due_date)
       @assignment.save
@@ -65,20 +60,14 @@ class AssignmentsController < ApplicationController
   end
   
   def list_student_keys
-    @assignment = Assignment.find_by_id(params[:id])
-    if not @assignment then
-      render :text => 'ERROR: assignment does not exist'
-    else
       @students = @assignment.students
-    end
   end
   
   def add_student_keys
     if not [:keys] 
       render :text => 'required param \'keys\' missing.'
     else
-      @assignment = Assignment.find_by_id(params[:id])
-      @students = @assignment.add_student_keys(parse_array(params[:keys]))
+          @students = @assignment.add_student_keys(parse_array(params[:keys]))
       @assignment.save
     end
   end
@@ -87,15 +76,13 @@ class AssignmentsController < ApplicationController
     if not [:keys] 
       render :text => 'required param \'keys\' missing.'
     else
-      @assignment = Assignment.find_by_id(params[:id])
       @students = @assignment.remove_student_keys(parse_array(params[:keys]))
       @assignment.save
     end
   end
   
   def submit
-    @assignment = Assignment.find_by_id(params[:id])
-    @student = @assignment.students.find_by_key(params[:student_key])
+      @student = @assignment.students.find_by_key(params[:student_key])
     if(@student != nil)    
       submission = get_file_contents(params[:submission])
       @submission = @student.add_submission(submission)
@@ -107,8 +94,7 @@ class AssignmentsController < ApplicationController
   end
   
   def retrieve_submissions
-    @assignment = Assignment.find_by_id(params[:id])
-    @submissions = @assignment.submissions
+      @submissions = @assignment.submissions
     if(params[:keys])
       @submissions = Student.find_all_by_key(parse_array(params[:keys])).map{|student| student.submissions}.flat_map{|i| i}
     end
@@ -127,8 +113,15 @@ class AssignmentsController < ApplicationController
     date =~ /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}( -[0-9]{4})?$/
   end
   
-  def authenticate_prof
-    return True 
+  def authenticate_prof 
+    return True
     #Professor.find_by_prof_key(params[:prof_key])
+  end
+   
+  def find_assignment
+  @assignment = Assignment.find_by_id(params[:id])
+      if not @assignment then
+      render :text => 'ERROR: assignment does not exist' 
+    end 
   end 
 end
