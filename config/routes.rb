@@ -9,8 +9,8 @@ Autograder::Application.routes.draw do
   # assignment routes
   post 'assignments/create(.:format)' => 'assignments#create', :defaults => { :format => 'json' }
   
-  get 'assignments/:id/autograder' => 'assignments#get_autograder'
-  put 'assignments/:id/autograder' => 'assignments#set_autograder'
+  get 'assignments/:id/autograder' => 'assignments#get_autograder', :defaults => { :format => 'json' }
+  put 'assignments/:id/autograder' => 'assignments#set_autograder', :defaults => { :format => 'json' }
   
   get 'assignments/:id/due_date(.:format)' => 'assignments#get_due_date', :defaults => { :format => 'json' }
   put 'assignments/:id/due_date(.:format)' => 'assignments#set_due_date', :defaults => { :format => 'json' }
