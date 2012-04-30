@@ -57,13 +57,20 @@ namespace :assignment  do
     puts a
   end
 
-
-  desc "To update the autograder"
-  task :update_autograder, [:id, :autograder] => [:environment] do |t, args|
+  desc "To set the autograder"
+  task :set_autograder, [:id, :autograder] => [:environment] do |t, args|
     root = Rails.root + "test/fixtures" 
     
     puts "Rake Task: To update the autograder"
-    a = `curl -s -X PUT -F autograder=@#{root + args[:autograder]} /dev/null localhost:3000/assignments/#{args[:id]}/update_autograder.json 2>&1`
+    a = `curl -s -X PUT -F autograder=@#{root + args[:autograder]} /dev/null localhost:3000/assignments/#{args[:id]}/autograder 2>&1`
+    puts a
+  end
+  desc "To get the autograder"
+  task :get_autograder, [:id] => [:environment] do |t, args|
+    root = Rails.root + "test/fixtures" 
+    
+    puts "Rake Task: To update the autograder"
+    a = `curl -s -X GET /dev/null localhost:3000/assignments/#{args[:id]}/autograder 2>&1`
     puts a
   end
   
