@@ -10,6 +10,5 @@ require 'spec_helper'
 #     end
 #   end
 # end
-describe InstructorHelper do
-  pending "add some examples to (or delete) #{__FILE__}"
+describe InstructorsHelper do
 end

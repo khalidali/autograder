@@ -9,10 +9,11 @@ describe Assignment do
     describe "add_student_keys" do
        it 'should create a student with the given student key' do
           @hw1.add_student_keys(["s_key1", "s_key2"])
-          studenta = @hw1.students.find_by_student_key('s_key1')
-          studenta.student_key.should == "s_key1"
-          studentb = @hw1.students.find_by_student_key('s_key2')
-          studentb.student_key.should == "s_key2"
+          studenta = @hw1.students.find_by_key('s_key1')
+          studenta.key.should == "s_key1"
+          studentb = @hw1.students.find_by_key('s_key2')
+          studentb.key.should == "s_key2"
+          @hw1.add_student_keys(["s_key1"]).should == {"s_key1"=>"ERROR: key already exists."}
        end
     end
     
@@ -21,21 +22,22 @@ describe Assignment do
           student = []
           @hw1.add_student_keys(["s_key1", "s_key2"])
           #check students are being added
-          @hw1.students.find_by_student_key('s_key1').student_key.should == "s_key1"
-          @hw1.students.find_by_student_key('s_key2').student_key.should == "s_key2"
+          @hw1.students.find_by_key('s_key1').key.should == "s_key1"
+          @hw1.students.find_by_key('s_key2').key.should == "s_key2"
           #remove students
-          @hw1.remove_student_keys(["s_key1", "s_key2"])
-          @hw1.students.where(:student_key => "s_key1").should == student
-          @hw1.students.where(:student_key => "s_key2").should == student
+          @hw1.remove_student_keys(["s_key1", "s_key2"]).should ==  {"s_key1"=>"removed", "s_key2"=>"removed"}
+          @hw1.students.where(:key => "s_key1").should == student
+          @hw1.students.where(:key => "s_key2").should == student
+          @hw1.remove_student_keys(["s_key1"]).should == {"s_key1"=>"ERROR: key not found"} 
        end
     end
     
-    describe "change_due_date" do
-       it 'should change due date' do
-         newtime = Time.now
-         @hw1.change_due_date(newtime)
-         @hw1.due_date.should == newtime
-       end
+    describe "has_student_key" do
+      it 'should check if student key exists' do
+           @hw1.add_student_keys(["s_key1", "s_key2"])
+           @hw1.has_student_key?("s_key1").key.should == "s_key1"
+           @hw1.has_student_key?("s_key2").key.should == "s_key2"
+      end
     end
   
 end

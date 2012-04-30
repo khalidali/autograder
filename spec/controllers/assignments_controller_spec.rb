@@ -496,15 +496,19 @@ describe AssignmentsController do
 	describe "submit and student does not exist" do
 		it "should render an error" do 
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
-			@fake_assignment.stub_chain(:students, :find_by_key).and_return(nil)
+			@students = [mock(:student), mock(:student)]
+			@fake_assignment.stub(:students).and_return(@students)
+			@students.stub(:find_by_key).and_return(nil)
 			put :submit, {:id => "id", :key => "key", :submission => @submission, :format => :json}
-			response.should render_template(render :text => 'ERROR: student key doesn\'t exist.')
+			response.should render_template(:text => 'ERROR: student key doesn\'t exist.')
 		end
 	end
 	describe "submit with no keys param and student does not exist" do
 		it "should render an error" do 
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
-			@fake_assignment.stub_chain(:students, :find_by_key).and_return(nil)
+			@students = [mock(:student), mock(:student)]
+			@fake_assignment.stub(:students).and_return(@students)
+			@students.stub(:find_by_key).and_return(nil)
 			put :submit, {:id => "id", :key => "key", :format => :json}
 			response.should render_template(:text => 'ERROR: required param \'submission\' missing.')
 		end
