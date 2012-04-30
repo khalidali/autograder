@@ -7,4 +7,5 @@ Feature: Create assignments
   Scenario: Create a new assignment
     When I create an assignment with the following: "prof_key=armando&student_keys=[robert, khalid, ernest]"
     Then the response should be "200"
-    And the response should contain "Assignment Created"
+    And the response should contain "created_at"
+    And the response should not contain "ERROR"

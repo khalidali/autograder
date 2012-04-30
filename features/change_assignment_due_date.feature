@@ -6,6 +6,7 @@ Feature: Change assignment due date
 
     Scenario: Changing assignment due date
       Given an assignment with id "1" exists
-      And I change the due date of assignment 1 to 01/02/99
+      And I change the due date of assignment 1 to "2012-04-29 19:50:05 -0700"
       Then the response should be "200"
-      And the response should contain "New Due Date"
+      And the response should contain "due_date"
+      And the response should not contain "ERROR"

@@ -8,39 +8,39 @@ Given /^the test db is populated$/ do
 end
 
 Given /^I allow the following keys "([^"]*)" to submit to the assignment whose id is "([^"]*)"$/ do |keys, id|
-  step "I send a PUT request to \"/assignments/#{id}/add_student_keys.json\" with the following:\"student_keys=#{keys}\""
+  step "I send a PUT request to \"/assignments/#{id}/student_keys/add.json\" with the following:\"keys=[#{keys}]\""
 end
 
 
 Given /^"([^"]*)" submits "([^"]*)" to the assignment whose id is "([^"]*)"$/ do |key, code, id|
-  put "assignments/#{id}/submit.json", "student_key"=> key,  "submission" => Rack::Test::UploadedFile.new(Rails.root + "test/fixtures/" + code)
+  put "assignments/#{id}/submit.json", "key"=> key,  "submission" => Rack::Test::UploadedFile.new(Rails.root + "test/fixtures/" + code)
 end
 
 When /^I retrieve all submissions to the assignment whose id is "([^"]*)"$/ do |id|
-  get "assignments/#{id}/retrieve_all_submissions.json"
+  get "assignments/#{id}/submissions"
 end
 
 When /^I retrieve all "([^"]*)" submissions to the assignment whose id is "([^"]*)"$/ do |status, id|
-  get "assignments/#{id}/retrieve_submissions_by_status.json", "status" => status
+  get "assignments/#{id}/submissions", "status" => status
 end
 
 
 When /^I upload the autograder "([^"]*)" to the assignment whose id is "([^"]*)"$/ do |autograder, id|
-  put "assignments/#{id}/update_autograder.json", "autograder" => Rack::Test::UploadedFile.new(Rails.root + "test/fixtures/" + autograder)
+  put "assignments/#{id}/autograder", "autograder" => Rack::Test::UploadedFile.new(Rails.root + "test/fixtures/" + autograder)
 end
 
 
 
 And /^I add the following student keys to assignment (\d+): (.*)$/ do |id, keys|
-  step "I send a PUT request to \"/assignments/#{id}/add_student_keys.json\" with the following:\"student_keys=[#{keys}]\""
+  step "I send a PUT request to \"/assignments/#{id}/student_keys/add.json\" with the following:\"keys=[#{keys}]\""
 end
 
 When /^I retrieve all submissions for assignment (\d+)$/ do |id|
-  step "I send a GET request for \"/assignments/#{id}/retrieve_all_submissions.json\""
+  step "I send a GET request for \"/assignments/#{id}/submissions\""
 end
 
-When /^I change the due date of assignment (\d+) to (.*)$/ do |id, date|
-  step "I send a PUT request to \"/assignments/#{id}/change_due_date.json\" with the following: \"due_date=#{date}\""
+When /^I change the due date of assignment (\d+) to "(.*)"$/ do |id, date|
+  step "I send a PUT request to \"/assignments/#{id}/due_date.json\" with the following: \"due_date=#{date}\""
 end
 
 When /^I create an assignment with the following: "([^"]*)"$/ do |params|
@@ -48,6 +48,15 @@ When /^I create an assignment with the following: "([^"]*)"$/ do |params|
 end
 
 When /^I remove the following student keys to assignment (\d+): (.*)$/ do |id, keys|
-  step "I send a PUT request to \"/assignments/#{id}/remove_student_keys.json\" with the following:\"student_keys=#{keys}\""
+  step "I send a PUT request to \"/assignments/#{id}/student_keys/remove.json\" with the following:\"keys=[#{keys}]\""
+end
+
+And /^I print the response/ do
+  puts last_response.body
+end
+Then /^I should get valid JSON$/ do 
+  assert_nothing_raised do 
+    ActiveSupport::JSON.decode(@response.body) 
+  end
 end
 

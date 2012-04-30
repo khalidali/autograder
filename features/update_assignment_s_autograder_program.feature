@@ -8,4 +8,4 @@ Feature: Update assignment's autograder program
       Given an assignment with id "1" exists
       When I upload the autograder "inst_autograder.rb" to the assignment whose id is "1"
       Then the response should be "200"
-      And the response should contain "AutoGrader Updated"
+      And the response should not contain "ERROR"
