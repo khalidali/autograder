@@ -1,5 +1,6 @@
 class AssignmentsController < ApplicationController
   #before_filter :authenticate_prof, :except => [:submit]
+  before_filter :find_assignment, :except => [:create]
   
   def create 
     due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date])  
@@ -21,7 +22,6 @@ class AssignmentsController < ApplicationController
   end
   
   def get_autograder
-    @assignment = Assignment.find_by_id(params[:id])
   end
   
   def set_autograder
@@ -35,7 +35,6 @@ class AssignmentsController < ApplicationController
   end
   
   def get_due_date
-    @assignment = Assignment.find_by_id(params[:id])
   end
   
   def set_due_date
@@ -50,12 +49,10 @@ class AssignmentsController < ApplicationController
   end
   
   def get_late_due_date
-    @assignment = Assignment.find_by_id(params[:id])
   end
   
   def set_late_due_date
-    @assignment = Assignment.find_by_id(params[:id])
-    late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or is_valid_date?(params[:late_due_date]) 
+      late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or is_valid_date?(params[:late_due_date]) 
     if(late_due_date != nil)
       @assignment.change_late_due_date(late_due_date)
       @assignment.save
@@ -65,20 +62,14 @@ class AssignmentsController < ApplicationController
   end
   
   def list_student_keys
-    @assignment = Assignment.find_by_id(params[:id])
-    if not @assignment then
-      render :text => 'ERROR: assignment does not exist'
-    else
       @students = @assignment.students
-    end
   end
   
   def add_student_keys
     if not [:keys] 
       render :text => 'ERROR: required param \'keys\' missing.'
     else
-      @assignment = Assignment.find_by_id(params[:id])
-      @students = @assignment.add_student_keys(parse_array(params[:keys]))
+          @students = @assignment.add_student_keys(parse_array(params[:keys]))
       @assignment.save
     end
   end
@@ -87,7 +78,6 @@ class AssignmentsController < ApplicationController
     if not [:keys] 
       render :text => 'ERROR: required param \'keys\' missing.'
     else
-      @assignment = Assignment.find_by_id(params[:id])
       @students = @assignment.remove_student_keys(parse_array(params[:keys]))
       @assignment.save
     end
@@ -111,8 +101,7 @@ class AssignmentsController < ApplicationController
   end
   
   def retrieve_submissions
-    @assignment = Assignment.find_by_id(params[:id])
-    @submissions = @assignment.submissions
+      @submissions = @assignment.submissions
     if(params[:keys])
       @submissions = Student.find_all_by_key(parse_array(params[:keys])).map{|student| student.submissions}.flat_map{|i| i}
     end
@@ -131,8 +120,15 @@ class AssignmentsController < ApplicationController
     date =~ /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}( -[0-9]{4})?$/
   end
   
-  def authenticate_prof
-    return True 
+  def authenticate_prof 
+    return True
     #Professor.find_by_prof_key(params[:prof_key])
+  end
+   
+  def find_assignment
+  @assignment = Assignment.find_by_id(params[:id])
+      if not @assignment then
+      render :text => 'ERROR: assignment does not exist' 
+    end 
   end 
 end
