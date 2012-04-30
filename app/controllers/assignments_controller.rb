@@ -64,7 +64,7 @@ class AssignmentsController < ApplicationController
   end
   
   def add_student_keys
-    if not params[:keys] 
+    if not params[:keys] then
       render :text => 'ERROR: required param \'keys\' missing.'
     else
       @students = @assignment.add_student_keys(parse_array(params[:keys]))
@@ -73,7 +73,7 @@ class AssignmentsController < ApplicationController
   end
   
   def remove_student_keys
-    if not params[:keys] 
+    if not params[:keys] then
       render :text => 'ERROR: required param \'keys\' missing.'
     else
       @students = @assignment.remove_student_keys(parse_array(params[:keys]))
@@ -85,9 +85,9 @@ class AssignmentsController < ApplicationController
     @student = @assignment.students.find_by_key params[:key]
     if not @student and not params[:submission] 
       render :text => 'ERROR: student key doesn\'t exist and required param \'submission\' missing.'
-    else if not @student
+    elsif not @student then
       render :text => 'ERROR: student key doesn\'t exist.'
-    else if not params[:submission]
+    elsif not params[:submission] then
       render :text => 'ERROR: required param \'submission\' missing.'
     else
       submission = get_file_contents(params[:submission])
@@ -124,7 +124,8 @@ class AssignmentsController < ApplicationController
    
   def find_assignment
     @assignment = Assignment.find_by_id(params[:id])
-    if not @assignment
+
+    if not @assignment then
       render :text => 'ERROR: assignment does not exist' 
     end 
   end 
