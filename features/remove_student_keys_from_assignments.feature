@@ -7,7 +7,7 @@ Feature: Remove student keys from assignments
     Scenario: Removing student keys from an assignment
       Given an assignment with id "1" exists
       And I add the following student keys to assignment 1: omar, yaniv
-      And the response should contain "Student Keys Added"
+      And the response should contain "added"
       And I remove the following student keys to assignment 1: omar, yaniv
       Then the response should be "200"
-      And the response should contain "Student Keys Removed"
+      And the response should contain "removed"

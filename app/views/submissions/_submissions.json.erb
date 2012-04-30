@@ -1,4 +1,4 @@
-<% len = @submissions.length %>
+<% len = @submissions.length-1 %>
 [<% @submissions.each_with_index do |submission, index| %>
   <%= render :partial => 'submissions/submission', :locals => { :submission => submission } %>
-<% end %><% if index != len then %>,<% end %>]
+<% if index != len then %>,<% end %><% end %>]

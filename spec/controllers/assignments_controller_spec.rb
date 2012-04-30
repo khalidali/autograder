@@ -484,6 +484,36 @@ describe AssignmentsController do
 			response.should render_template('submit')
 		end
 	end
+	describe "submit with no keys param" do
+		it "should render an error" do 
+			@student = mock(:student)
+			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+			@fake_assignment.stub_chain(:students, :find_by_key).and_return(@student)
+			put :submit, {:id => "id", :key => "key", :format => :json}
+			response.should render_template(:text => 'ERROR: student key doesn\'t exist and required param \'submission\' missing.')
+		end
+	end 
+	describe "submit and student does not exist" do
+		it "should render an error" do 
+			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+			@students = [mock(:student), mock(:student)]
+			@fake_assignment.stub(:students).and_return(@students)
+			@students.stub(:find_by_key).and_return(nil)
+			put :submit, {:id => "id", :key => "key", :submission => @submission, :format => :json}
+			response.should render_template(:text => 'ERROR: student key doesn\'t exist.')
+		end
+	end
+	describe "submit with no keys param and student does not exist" do
+		it "should render an error" do 
+			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+			@students = [mock(:student), mock(:student)]
+			@fake_assignment.stub(:students).and_return(@students)
+			@students.stub(:find_by_key).and_return(nil)
+			put :submit, {:id => "id", :key => "key", :format => :json}
+			response.should render_template(:text => 'ERROR: required param \'submission\' missing.')
+		end
+	end
+
 
 	############# retrieve_submissions ############
   describe "Retreive list of submissions by grading status" do
