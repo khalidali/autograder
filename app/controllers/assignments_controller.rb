@@ -26,11 +26,11 @@ class AssignmentsController < ApplicationController
   
   def set_autograder
     @assignment = Assignment.find_by_id(params[:id])
-    if(params[:autograder] != nil)
+    if not params[:autograder] then
+      render :text => 'ERROR: required param \'autograder\' missing.'
+    else
       @assignment.autograder = get_file_contents(params[:autograder])
       @assignment.save
-    else
-      render :text => 'required param \'autograder\' missing.'
     end
   end
   
@@ -40,12 +40,12 @@ class AssignmentsController < ApplicationController
   
   def set_due_date
     @assignment = Assignment.find_by_id(params[:id])
-    due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date]) 
+    due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date])
     if(due_date != nil)
-      @assignment.change_due_date(due_date)
+      @assignment.due_date = due_date
       @assignment.save
     else
-      render :text => 'invalid or missing param \'due_date\'.'
+      render :text => 'ERROR: invalid or missing param \'due_date\'.'
     end
   end
   
@@ -60,7 +60,7 @@ class AssignmentsController < ApplicationController
       @assignment.change_late_due_date(late_due_date)
       @assignment.save
     else
-      render :text => 'invalid or missing param \'late_due_date\'.'
+      render :text => 'ERROR: invalid or missing param \'late_due_date\'.'
     end
   end
   
@@ -75,7 +75,7 @@ class AssignmentsController < ApplicationController
   
   def add_student_keys
     if not [:keys] 
-      render :text => 'required param \'keys\' missing.'
+      render :text => 'ERROR: required param \'keys\' missing.'
     else
       @assignment = Assignment.find_by_id(params[:id])
       @students = @assignment.add_student_keys(parse_array(params[:keys]))
@@ -85,7 +85,7 @@ class AssignmentsController < ApplicationController
   
   def remove_student_keys
     if not [:keys] 
-      render :text => 'required param \'keys\' missing.'
+      render :text => 'ERROR: required param \'keys\' missing.'
     else
       @assignment = Assignment.find_by_id(params[:id])
       @students = @assignment.remove_student_keys(parse_array(params[:keys]))
@@ -94,15 +94,19 @@ class AssignmentsController < ApplicationController
   end
   
   def submit
-    @assignment = Assignment.find_by_id(params[:id])
-    @student = @assignment.students.find_by_key(params[:student_key])
-    if(@student != nil)    
+    @assignment = Assignment.find_by_id params[:id]
+    @student = @assignment.students.find_by_key params[:key]
+    if not @student and not params[:submission] then
+      render :text => 'ERROR: student key doesn\'t exist and required param \'submission\' missing.'
+    else if not @student then
+      render :text => 'ERROR: student key doesn\'t exist.'
+    else if not params[:submission] then
+      render :text => 'ERROR: required param \'submission\' missing.'
+    else
       submission = get_file_contents(params[:submission])
       @submission = @student.add_submission(submission)
       @student.save()
       @submission_successful = true
-    else
-      @submission_successful = false
     end
   end
   
