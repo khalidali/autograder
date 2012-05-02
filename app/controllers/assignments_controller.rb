@@ -4,8 +4,8 @@ class AssignmentsController < ApplicationController
   before_filter :authenticate_instructor_with_assignment, :except => [:create, :submit]
   
   def create 
-    due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date])  
-    hard_deadline = params[:hard_deadline].to_time unless params[:hard_deadline] == nil or is_valid_date?(params[:hard_deadline])         
+    due_date = params[:due_date].to_time unless params[:due_date] == nil or not is_valid_date?(params[:due_date])  
+    hard_deadline = params[:hard_deadline].to_time unless params[:hard_deadline] == nil or not is_valid_date?(params[:hard_deadline])         
     autograder = get_file_contents(params[:autograder]) unless params[:autograder] == nil
     grading_strategy = params[:grading_strategy] if is_grading_strategy?(params[:grading_strategy])
     
@@ -67,7 +67,7 @@ class AssignmentsController < ApplicationController
   end
   
   def set_hard_deadline
-    hard_deadline = params[:hard_deadline].to_time unless params[:hard_deadline] == nil or is_valid_date?(params[:hard_deadline]) 
+    hard_deadline = params[:hard_deadline].to_time unless params[:hard_deadline] == nil or not is_valid_date?(params[:hard_deadline]) 
     if(hard_deadline != nil)
       @assignment.hard_deadline = hard_deadline
       @assignment.save
