@@ -15,8 +15,17 @@ Autograder::Application.routes.draw do
   get 'assignments/:id/due_date(.:format)' => 'assignments#get_due_date', :defaults => { :format => 'json' }
   put 'assignments/:id/due_date(.:format)' => 'assignments#set_due_date', :defaults => { :format => 'json' }
   
-  get 'assignments/:id/late_due_date(.:format)' => 'assignments#get_late_due_date', :defaults => { :format => 'json' }
-  put 'assignments/:id/late_due_date(.:format)' => 'assignments#set_late_due_date', :defaults => { :format => 'json' }
+  get 'assignments/:id/name(.:format)' => 'assignments#get_name', :defaults => { :format => 'json' }
+  put 'assignments/:id/name(.:format)' => 'assignments#set_name', :defaults => { :format => 'json' }
+  
+  get 'assignments/:id/hard_deadline(.:format)' => 'assignments#get_hard_deadline', :defaults => { :format => 'json' }
+  put 'assignments/:id/hard_deadline(.:format)' => 'assignments#set_hard_deadline', :defaults => { :format => 'json' }
+  
+  get 'assignments/:id/submissions_limit(.:format)' => 'assignments#get_submissions_limit', :defaults => { :format => 'json' }
+  put 'assignments/:id/submissions_limit(.:format)' => 'assignments#set_submissions_limit', :defaults => { :format => 'json' }
+  
+  get 'assignments/:id/grading_strategy(.:format)' => 'assignments#get_grading_strategy', :defaults => { :format => 'json' }
+  put 'assignments/:id/grading_strategy(.:format)' => 'assignments#set_grading_strategy', :defaults => { :format => 'json' }
   
   get 'assignments/:id/student_keys(/index(.:format))' => 'assignments#list_student_keys', :defaults => { :format => 'json' }
   put 'assignments/:id/student_keys/add(.:format)' => 'assignments#add_student_keys', :defaults => { :format => 'json' }

@@ -34,4 +34,8 @@ class Assignment < ActiveRecord::Base
     self.students.find_by_key(key)
   end
   
+  def grading_strategies
+    ['max', 'latest']
+  end
+  
 end
