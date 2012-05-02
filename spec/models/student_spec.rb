@@ -5,6 +5,7 @@ describe Student do
     before :each do
       @student1 = Factory(:student)
       @submit = Factory(:submission)
+      @assignment = Factory(:assignment)
       ResqueSpec.reset!
     end
   
@@ -14,7 +15,7 @@ describe Student do
           SubmissionGrader.should have_queue_size_of(1)
           submission = Submission.find_by_body('submission1')
           submission.body.should == 'submission1'
-          submission.status.should == 'pending'
+          submission.status.should == 'dequeued'
        end
     end
 end
