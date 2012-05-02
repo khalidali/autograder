@@ -5,7 +5,7 @@ Feature: Update assignment's autograder program
   I want to be able to upload a new autograder file to my assignment
 
     Scenario: Updating the autograder program
-      Given an assignment with id "1" exists
-      When I upload the autograder "inst_autograder.rb" to the assignment whose id is "1"
+      Given an assignment with id "1" exists for instructor "Armando"
+      When "Armando" uploads the autograder "inst_autograder.rb" to the assignment whose id is "1"
       Then the response should be "200"
       And the response should not contain "ERROR"

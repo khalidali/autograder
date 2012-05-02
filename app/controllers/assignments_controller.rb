@@ -9,12 +9,12 @@ class AssignmentsController < ApplicationController
     autograder = get_file_contents(params[:autograder]) unless params[:autograder] == nil
     grading_strategy = params[:grading_strategy] if is_grading_strategy?(params[:grading_strategy])
     
-    @assignment = Assignment.create(:name => params[:name],
+    @assignment = Assignment.create(:name => (params[:name] or "name"),
                                     :due_date => due_date, 
                                     :hard_deadline => hard_deadline,
-                                    :grading_strategy => grading_strategy,
+                                    :grading_strategy => (grading_strategy or 'max'),
                                     :autograder => autograder,
-                                    :submissions_limit => params[:submissions_limit])
+                                    :submissions_limit => (params[:submissions_limit] or 0))
                        
     if(params[:student_keys] != nil)
        student_keys = parse_array(params[:student_keys])

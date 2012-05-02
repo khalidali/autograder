@@ -5,8 +5,8 @@ Feature: Late Submissions
   I want to set another due date for late submissions
 
     Scenario: Change late submission due date
-      Giving an assignment with if "1" exists
-      When I change the late submission due date of assignment 1 to 01/01/99
+      Giving an assignment with id "1" exists for instructor "Armando"
+      When "Armando" changes the late submission due date of assignment 1 to 2012-04-29 19:50:05 -0700
       Then the response should be "200"
       And the response should contain "New Late Due Date"
 

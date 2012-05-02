@@ -5,10 +5,10 @@ Feature: Access assignment submissions
   I want to be able to add/remove keys to an assignment
 
     Scenario: Accessing assignment submissions
-      Given an assignment with id "1" exists
-      And I add the following student keys to assignment 1: omar, yaniv
+      Given an assignment with id "1" exists for instructor "Armando"
+      And "Armando" adds the following student keys to assignment 1: omar, yaniv
       And "omar" submits "student_code.rb" to the assignment whose id is "1"
-      When I retrieve all submissions for assignment 1
+      When "Armando" retrieves all submissions for assignment 1
       Then the response should be "200"
       And the response should contain "omar"
       And the response should not contain "robert"

@@ -1,56 +1,47 @@
-
-Given /^an assignment with id "([^"]*)" exists for instructor "([^"]*)"$/ do |arg1, arg2|
-  instructor = Instructor.create :key => arg2
-  instructor.assignments << Assignment.create(:id => arg1)
+Given /^an assignment with id "([^"]*)" exists for instructor "([^"]*)"$/ do |id, inst|
+  instructor = Instructor.create :key => inst
+  instructor.assignments << Assignment.create(:id => id)
   instructor.save
 end
 
-Given /^the test db is populated$/ do
-  #pending # express the regexp above with the code you wish you had
+Given /^"([^"]*)" allows the following keys "([^"]*)" to submit to the assignment whose id is "([^"]*)"$/ do |inst, keys, id|
+  step "I send a PUT request to \"/assignments/#{id}/student_keys/add.json\" with the following:\"inst_key=#{inst}&keys=[#{keys}]\""
 end
-
-Given /^I allow the following keys "([^"]*)" to submit to the assignment whose id is "([^"]*)"$/ do |keys, id|
-  step "I send a PUT request to \"/assignments/#{id}/student_keys/add.json\" with the following:\"keys=[#{keys}]\""
-end
-
 
 Given /^"([^"]*)" submits "([^"]*)" to the assignment whose id is "([^"]*)"$/ do |key, code, id|
   put "assignments/#{id}/submit.json", "key"=> key,  "submission" => Rack::Test::UploadedFile.new(Rails.root + "test/fixtures/" + code)
 end
 
-When /^I retrieve all submissions to the assignment whose id is "([^"]*)"$/ do |id|
-  get "assignments/#{id}/submissions"
+When /^"([^"]*)" retrieves all submissions to the assignment whose id is "([^"]*)"$/ do |inst, id|
+  get "assignments/#{id}/submissions?inst_key=#{inst}"
 end
 
-When /^I retrieve all "([^"]*)" submissions to the assignment whose id is "([^"]*)"$/ do |status, id|
-  get "assignments/#{id}/submissions", "status" => status
+When /^"([^"]*)" retrieves all "([^"]*)" submissions to the assignment whose id is "([^"]*)"$/ do |inst, status, id|
+  get "assignments/#{id}/submissions?inst_key=#{inst}", "status" => status
 end
 
-
-When /^I upload the autograder "([^"]*)" to the assignment whose id is "([^"]*)"$/ do |autograder, id|
-  put "assignments/#{id}/autograder", "autograder" => Rack::Test::UploadedFile.new(Rails.root + "test/fixtures/" + autograder)
+When /^"([^"]*)" uploads the autograder "([^"]*)" to the assignment whose id is "([^"]*)"$/ do |inst, autograder, id|
+  put "assignments/#{id}/autograder", "autograder" => Rack::Test::UploadedFile.new(Rails.root + "test/fixtures/" + autograder), "inst_key" => inst
 end
 
-
-
-And /^I add the following student keys to assignment (\d+): (.*)$/ do |id, keys|
-  step "I send a PUT request to \"/assignments/#{id}/student_keys/add.json\" with the following:\"keys=[#{keys}]\""
+And /^"([^"]*)" adds the following student keys to assignment (\d+): (.*)$/ do |inst, id, keys|
+  step "I send a PUT request to \"/assignments/#{id}/student_keys/add.json\" with the following:\"inst_key=#{inst}&keys=[#{keys}]\""
 end
 
-When /^I retrieve all submissions for assignment (\d+)$/ do |id|
-  step "I send a GET request for \"/assignments/#{id}/submissions\""
+When /^"([^"]*)" retrieves all submissions for assignment (\d+)$/ do |inst, id|
+  step "I send a GET request for \"/assignments/#{id}/submissions?inst_key=#{inst}\""
 end
 
-When /^I change the due date of assignment (\d+) to "(.*)"$/ do |id, date|
-  step "I send a PUT request to \"/assignments/#{id}/due_date.json\" with the following: \"due_date=#{date}\""
+When /^"([^"]*)" changes the due date of assignment (\d+) to "(.*)"$/ do |inst, id, date|
+  step "I send a PUT request to \"/assignments/#{id}/due_date.json\" with the following: \"inst_key=#{inst}&due_date=#{date}\""
 end
 
-When /^I create an assignment with the following: "([^"]*)"$/ do |params|
-  step "I send a POST request to \"/assignments/create.json\" with the following:\"#{params}\""
+When /^"([^"]*)" creates an assignment with the following: "([^"]*)"$/ do |inst, params|
+  step "I send a POST request to \"/assignments/create.json\" with the following:\"inst_key=#{inst}&#{params}\""
 end
 
-When /^I remove the following student keys to assignment (\d+): (.*)$/ do |id, keys|
-  step "I send a PUT request to \"/assignments/#{id}/student_keys/remove.json\" with the following:\"keys=[#{keys}]\""
+When /^"([^"]*)" removes the following student keys to assignment (\d+): (.*)$/ do |inst, id, keys|
+  step "I send a PUT request to \"/assignments/#{id}/student_keys/remove.json\" with the following:\"inst_key=#{inst}&keys=[#{keys}]\""
 end
 
 And /^I print the response/ do
@@ -78,7 +69,7 @@ Given /^the instructor key "([^"]*)" is authorized$/ do |arg1|
   Instructor.create(:key => arg1)
 end
 
-Then /^I change the late submission due date of assignment (\d+) to (.*)$/ do |arg1, arg2|
-  step "I send a PUT request to \"/assignments/#{arg1}/hard_deadline\" with the following: \"hard_deadline=#{arg2}\""
+Then /^"([^"]*)" changes the late submission due date of assignment (\d+) to (.*)$/ do |inst, arg1, arg2|
+  step "I send a PUT request to \"/assignments/#{arg1}/hard_deadline\" with the following: \"inst_key=#{inst}&hard_deadline=#{arg2}\""
 end
 
