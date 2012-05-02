@@ -5,6 +5,7 @@ class CreateAssignments < ActiveRecord::Migration
       t.time :due_date
       t.time :hard_deadline
       t.string :prof_key
+      t.string :grading_strategy
       t.text :autograder
       t.integer :professor_id
       t.integer :submissions_limit

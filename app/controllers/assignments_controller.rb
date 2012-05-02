@@ -70,6 +70,18 @@ class AssignmentsController < ApplicationController
   def get_submissions_limit
   end
   
+  def get_grading_strategy
+  end
+  
+  def set_grading_strategy
+    if not @assignment.grading_strategies.include? params[:grading_strategy] then
+      render :text => 'ERROR: invalid grading strategy passed in.'
+    else
+      @assignment.grading_strategy = params[:grading_strategy]
+      @assignment.save
+    end
+  end
+  
   def set_submissions_limit
     @assignment.submissions_limit = params[:submissions_limit]
     @assignment.save
