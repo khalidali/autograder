@@ -15,8 +15,8 @@ ActiveRecord::Schema.define(:version => 20120502185301) do
 
   create_table "assignments", :force => true do |t|
     t.string   "name"
-    t.datetime "due_date"
-    t.datetime "hard_deadline"
+    t.time     "due_date"
+    t.time     "hard_deadline"
     t.string   "grading_strategy"
     t.text     "autograder"
     t.integer  "submissions_limit"

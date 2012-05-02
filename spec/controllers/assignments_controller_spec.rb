@@ -552,7 +552,9 @@ describe AssignmentsController do
       @submission = fixture_file_upload('/files/temp.rb')
       @file = mock(:file)
       @num = mock(:integer)
+      @time  = "9999-05-01 23:37:33 -0700".to_time
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
+      @fake_assignment.stub(:hard_deadline).and_return(@time)
       @fake_assignment.stub(:submissions_limit).and_return(@num)
       @num.stub(">")
 
