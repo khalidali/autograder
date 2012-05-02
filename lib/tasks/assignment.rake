@@ -5,16 +5,17 @@ namespace :assignment do
     if(args[:autograder] == nil)
       autograder = Rails.root + "test/fixtures" + "inst_autograder.rb"
     else
-      autograder = Rails.root + "test/fixtures" + params[:autograder]
+      autograder = Rails.root + "test/fixtures" + args[:autograder]
     end
     if(args[:student_keys] == nil)
       student = "robert,khalid,ernest"
     else
       student = "#{args[:student_keys]}".gsub(/[;]/, ',')
     end
+    date = Time.new.to_s
     
     puts "Rake Task: Creates an assignment with given arguments"
-    a = `curl -s -X POST /dev/null localhost:3000/assignments/create.json -F "inst_key=#{args[:inst_key]}" -F "student_keys=[#{student}]" -F autograder=@#{autograder} 2>&1`
+    a = `curl -s -X POST /dev/null localhost:3000/assignments/create.json -F "inst_key=#{args[:inst_key]}" -F "student_keys=[#{student}]" -F "name=cs169_lab1" -F "due_date=#{date}" -F "hard_deadline=#{date}" -F "grading_strategy=max" -F "submissions_limit=1" -F autograder=@#{autograder} 2>&1`
     puts a
   end
   
