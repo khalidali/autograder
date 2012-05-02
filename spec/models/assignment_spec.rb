@@ -40,5 +40,10 @@ describe Assignment do
       end
     end
   
+    describe "grading strategy" do
+      it 'should check grading_strategies' do
+        @hw1.grading_strategies.should ==  ['max', 'latest']
+      end
+    end
 end
 
