@@ -132,6 +132,28 @@ describe AssignmentsController do
 		end
   end
 
+  #################### set_name ###############
+  describe "set name" do
+    before(:each) do
+      @fake_assignment = mock(:assignment)
+      @fake_instructor = mock(:instructor)
+      Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+      Instructor.stub(:find_by_key).with("inst_key").and_return(@fake_instructor)
+      @fake_assignment.stub(:instructor).and_return(@fake_instructor)
+    end
+		it "should change name for given assignment" do
+			@fake_assignment.should_receive(:name=).with("name")
+			@fake_assignment.stub(:save)
+      put :set_name, {:id => "id", :name => "name", :inst_key => "inst_key", :format => :json}
+		end
+		it 'Should render the correct template' do
+			@fake_assignment.stub(:name=)
+			@fake_assignment.should_receive(:save)
+      put :set_name, {:id => "id", :name => "name", :inst_key => "inst_key", :format => :json}
+			response.should render_template('set_name')
+		end
+  end
+
 	#################### get_autograder ###############
   describe "Get the autograder for a givin assignment" do
     before(:each) do
@@ -219,9 +241,11 @@ describe AssignmentsController do
   end
 	describe "Set the Autograder with no autograder param" do
 		it "should render an error" do 
-		  @fake_instructor = mock(:instructor)
+		  @fake_assignment = mock(:assignment)
+      @fake_instructor = mock(:instructor)
+      Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
       Instructor.stub(:find_by_key).with("inst_key").and_return(@fake_instructor)
-			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+      @fake_assignment.stub(:instructor).and_return(@fake_instructor)
 			put :set_autograder, {:id => "id",:inst_key => "inst_key", :format => :json}
 			response.should render_template(:text => 'ERROR: required param \'autograder\' missing.')
 		end
@@ -275,9 +299,11 @@ describe AssignmentsController do
 	describe "Set the due date with no due date param" do
 		it "should render an error" do 
 		  @fake_instructor = mock(:instructor)
+		  @fake_assignment = mock(:assignment)
       Instructor.stub(:find_by_key).with("inst_key").and_return(@fake_instructor)
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
-			put :set_due_date, {:id => "id", :inst_key => "inst_key", :format => :json}
+			@fake_assignment.stub(:instructor).and_return(@fake_instructor)
+			put :set_due_date, {:id => "id", :inst_key => "inst_key", :due_date => "",  :format => :json}
 			response.should render_template(:text => 'ERROR: invalid or missing param \'due_date\'.')
 		end
 	end 
@@ -336,13 +362,67 @@ describe AssignmentsController do
   end
 	describe "Set the late due date with no late due date param" do
 		it "should render an error" do 
-		  @fake_instructor = mock(:instructor)
+		 @fake_assignment = mock(:assignment)
+      @fake_instructor = mock(:instructor)
+      Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
       Instructor.stub(:find_by_key).with("inst_key").and_return(@fake_instructor)
-			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+      @fake_assignment.stub(:instructor).and_return(@fake_instructor)
 			put :set_hard_deadline, {:id => "id", :inst_key => "inst_key", :format => :json}
 			response.should render_template(:text => 'required param \'hard_deadline\' missing.')
 		end
 	end  
+	
+	#################### set_grading_strategy ###############
+  describe "set grading strategy" do
+    before(:each) do
+      @fake_assignment = mock(:assignment)
+      @fake_instructor = mock(:instructor)
+      Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+      Instructor.stub(:find_by_key).with("inst_key").and_return(@fake_instructor)
+      @fake_assignment.stub(:instructor).and_return(@fake_instructor)
+    end
+		it "should update the grading strategy for an assignement" do
+		  @fake_assignment.stub_chain(:grading_strategies, :include?).and_return(true)
+			@fake_assignment.should_receive(:grading_strategy=).with("max")
+			@fake_assignment.stub(:save)
+      put :set_grading_strategy, {:id => "id", :grading_strategy => "max", :inst_key => "inst_key", :format => :json}
+		end
+		it 'Should render the correct template' do
+		  @fake_assignment.stub_chain(:grading_strategies, :include?).and_return(true)
+			@fake_assignment.stub(:grading_strategy=)
+			@fake_assignment.should_receive(:save)
+      put :set_grading_strategy, {:id => "id", :grading_strategy => "max", :inst_key => "inst_key", :format => :json}
+			response.should render_template('set_grading_strategy')
+		end
+		it 'Should render an error if strategy is not valid' do
+		  @fake_assignment.stub_chain(:grading_strategies, :include?).and_return(false)
+      put :set_grading_strategy, {:id => "id", :grading_strategy => "blah", :inst_key => "inst_key", :format => :json}
+			response.should render_template(:text => 'ERROR: invalid grading strategy passed in.')
+		end
+		
+  end
+  
+  #################### set_submissions_limit ###############
+  describe "set name" do
+    before(:each) do
+      @fake_assignment = mock(:assignment)
+      @fake_instructor = mock(:instructor)
+      Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+      Instructor.stub(:find_by_key).with("inst_key").and_return(@fake_instructor)
+      @fake_assignment.stub(:instructor).and_return(@fake_instructor)
+    end
+		it "should change name for given assignment" do
+			@fake_assignment.should_receive(:submissions_limit=).with("3")
+			@fake_assignment.stub(:save)
+      put :set_submissions_limit, {:id => "id", :submissions_limit => "3", :inst_key => "inst_key", :format => :json}
+		end
+		it 'Should render the correct template' do
+			@fake_assignment.stub(:submissions_limit=)
+			@fake_assignment.should_receive(:save)
+      put :set_submissions_limit, {:id => "id", :submissions_limit => "3", :inst_key => "inst_key", :format => :json}
+			response.should render_template('set_submissions_limit')
+		end
+  end
 
 	#################### list_student_keys ###############
   describe "list student keys for a givin assignment" do
@@ -401,10 +481,11 @@ describe AssignmentsController do
   end
 	describe "Add student keys with no keys param" do
 		it "should render an error" do 
-		  @fake_instructor = mock(:instructor)
+		  @fake_assignment = mock(:assignment)
+      @fake_instructor = mock(:instructor)
+      Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
       Instructor.stub(:find_by_key).with("inst_key").and_return(@fake_instructor)
-
-			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+      @fake_assignment.stub(:instructor).and_return(@fake_instructor)
 			put :add_student_keys, {:id => "id", :inst_key => "inst_key", :format => :json}
 			response.should render_template(:text => 'ERROR: required param \'keys\' missing.')
 		end
@@ -448,9 +529,11 @@ describe AssignmentsController do
   end
 	describe "Remove student keys with no keys param" do
 		it "should render an error" do 
-		  @fake_instructor = mock(:instructor)
+		  @fake_assignment = mock(:assignment)
+      @fake_instructor = mock(:instructor)
+      Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
       Instructor.stub(:find_by_key).with("inst_key").and_return(@fake_instructor)
-			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+      @fake_assignment.stub(:instructor).and_return(@fake_instructor)
 			put :remove_student_keys, {:id => "id", :inst_key => "inst_key", :format => :json}
 			response.should render_template(:text => 'ERROR: required param \'keys\' missing.')
 		end
@@ -470,13 +553,13 @@ describe AssignmentsController do
       @file = mock(:file)
       @num = mock(:integer)
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
+      @fake_assignment.stub(:submissions_limit).and_return(@num)
+      @num.stub(">")
 
 		end		
 		it "should retreive students from assignment" do
 			@fake_assignment.should_receive(:students).and_return(@student_list)
 			@student_list.stub(:find_by_key).with("key").and_return(@student)
-			@fake_assignment.stub(:submissions_limit).and_return(@num)
-      @num.stub(">")
 			@submission.stub_chain(:tempfile, :path)
       File.stub_chain(:open, :read)
 			@student.stub(:add_submission)
@@ -541,6 +624,35 @@ describe AssignmentsController do
 			response.should render_template('submit')
 		end
 	end
+	describe "Invalid Submittion: " do
+	  before(:each) do
+	    @fake_assignment = mock(:assignment)
+      @fake_instructor = mock(:instructor)
+      Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+      Instructor.stub(:find_by_key).with("inst_key").and_return(@fake_instructor)
+      @fake_assignment.stub(:instructor).and_return(@fake_instructor)
+      @student = mock(:student)
+      @submission = fixture_file_upload('/files/temp.rb')
+      @student = mock(:student)
+			@student_list = [mock(:student), mock(:student)]
+	  end
+		it "missing submission paramater and no student found should render an error" do 
+      @fake_assignment.stub_chain(:students, :find_by_key)
+			put :submit, {:id => "id", :inst_key => "inst_key", :format => :json}
+			response.should render_template(:text => 'ERROR: student key doesn\'t exist and required param \'submission\' missing.')
+		end
+		it "missing submission paramater should render an error" do 
+      @fake_assignment.stub_chain(:students, :find_by_key).and_return(@student)
+			put :submit, {:id => "id", :inst_key => "inst_key", :format => :json}
+			response.should render_template(:text => 'ERROR: required param \'submission\' missing.')
+		end
+		it "no student found should render an error" do 
+      @fake_assignment.stub_chain(:students, :find_by_key)
+			put :submit, {:id => "id", :inst_key => "inst_key", :submission => @submission, :format => :json}
+			response.should render_template(:text => 'ERROR: student key doesn\'t exist.')
+		end
+	end
+	
 
 	############# retrieve_submissions ############
   describe "Retreive list of submissions by grading status" do
@@ -635,5 +747,35 @@ describe AssignmentsController do
       response.should render_template('retrieve_submission')
     end
   end
+  
+  describe "Invalid instructor key" do
+		it "should render an error" do 
+		  @fake_assignment = mock(:assignment)
+      Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+      Instructor.stub(:find_by_key).with("inst_key")
+			put :remove_student_keys, {:id => "id", :inst_key => "inst_key", :format => :json}
+			response.should render_template(:text => 'ERROR: professor key is not valid for this assignment')
+		end
+	end
+	describe "Invalid instructor key" do
+		it "should render an error" do 
+		  @fake_assignment = mock(:assignment)
+      Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+      Instructor.stub(:find_by_key).with("inst_key")
+			post :create, {:id => "id", :inst_key => "inst_key", :format => :json}
+			response.should render_template(:text => 'ERROR: professor key is not valid')
+		end
+	end
+	describe "No Assignment" do
+		it "should render an error" do 
+		  @fake_assignment = mock(:assignment)
+      @fake_instructor = mock(:instructor)
+      Assignment.stub(:find_by_id).with("id")
+      Instructor.stub(:find_by_key).with("inst_key").and_return(@fake_instructor)
+			put :remove_student_keys, {:id => "id", :inst_key => "inst_key", :format => :json}
+			response.should render_template(:text => 'ERROR: assignment does not exist' )
+		end
+	end
+  
 end
 
