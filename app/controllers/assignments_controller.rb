@@ -4,13 +4,13 @@ class AssignmentsController < ApplicationController
   
   def create 
     due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date])  
-    late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or is_valid_date?(params[:late_due_date])         
+    hard_deadline = params[:hard_deadline].to_time unless params[:hard_deadline] == nil or is_valid_date?(params[:hard_deadline])         
     autograder = get_file_contents(params[:autograder]) unless params[:autograder] == nil
 
     
     @assignment = Assignment.create(:prof_key => params[:prof_key], 
                                     :due_date => due_date, 
-                                    :late_due_date => late_due_date,
+                                    :hard_deadline => hard_deadline,
                                     :autograder => autograder)
                                     
     if(params[:student_keys] != nil)
@@ -19,6 +19,14 @@ class AssignmentsController < ApplicationController
     end
          
     @assignment.save()
+  end
+  
+  def get_name
+  end
+  
+  def set_name
+    @assignment.name = params[:name]
+    @assignment.save
   end
   
   def get_autograder
@@ -46,16 +54,16 @@ class AssignmentsController < ApplicationController
     end
   end
   
-  def get_late_due_date
+  def get_hard_deadline
   end
   
-  def set_late_due_date
-    late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or is_valid_date?(params[:late_due_date]) 
-    if(late_due_date != nil)
-      @assignment.late_due_date = late_due_date
+  def set_hard_deadline
+    hard_deadline = params[:hard_deadline].to_time unless params[:hard_deadline] == nil or is_valid_date?(params[:hard_deadline]) 
+    if(hard_deadline != nil)
+      @assignment.hard_deadline = hard_deadline
       @assignment.save
     else
-      render :text => 'ERROR: invalid or missing param \'late_due_date\'.'
+      render :text => 'ERROR: invalid or missing param \'hard_deadline\'.'
     end
   end
   
