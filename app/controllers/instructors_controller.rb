@@ -1,5 +1,6 @@
 class InstructorsController < ApplicationController
   before_filter :authenticate_super_user
+  
   def index
     @instructors = Instructor.find(:all)
   end
@@ -44,9 +45,10 @@ class InstructorsController < ApplicationController
       end
     end
   end
+  
   def authenticate_super_user
     if Instructor::SuperUser.key != params[:super_key] 
-      render :text => 'SuperUser permission required for this action'
+      render :text => 'ERROR: SuperUser key required for this action.'
     end
   end
 end
