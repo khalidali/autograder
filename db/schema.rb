@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120429095047) do
+ActiveRecord::Schema.define(:version => 20120502185301) do
 
   create_table "assignments", :force => true do |t|
     t.string   "name"
@@ -25,11 +25,15 @@ ActiveRecord::Schema.define(:version => 20120429095047) do
     t.datetime "updated_at"
   end
 
+  add_index "assignments", ["instructor_id"], :name => "index_assignments_on_instructor_id"
+
   create_table "instructors", :force => true do |t|
     t.string   "key"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "instructors", ["key"], :name => "index_instructors_on_key"
 
   create_table "students", :force => true do |t|
     t.string   "key"
@@ -37,6 +41,9 @@ ActiveRecord::Schema.define(:version => 20120429095047) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "students", ["assignment_id"], :name => "index_students_on_assignment_id"
+  add_index "students", ["key"], :name => "index_students_on_key", :unique => true
 
   create_table "submissions", :force => true do |t|
     t.text     "body"
@@ -46,5 +53,7 @@ ActiveRecord::Schema.define(:version => 20120429095047) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "submissions", ["status"], :name => "index_submissions_on_status"
 
 end
