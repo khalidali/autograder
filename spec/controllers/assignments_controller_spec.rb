@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe AssignmentsController do
+
   
 	#################### CREATE #########################
   describe "Create an Assignment with an a list of Student Keys" do
@@ -168,7 +169,7 @@ describe AssignmentsController do
 		it "should render an error" do 
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
 			put :set_autograder, {:id => "id", :format => :json}
-			response.should render_template(:text => 'required param \'autograder\' missing.')
+			response.should render_template(:text => 'ERROR: required param \'autograder\' missing.')
 		end
 	end
 	
@@ -224,7 +225,7 @@ describe AssignmentsController do
 		it "should render an error" do 
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
 			put :set_due_date, {:id => "id", :format => :json}
-			response.should render_template(:text => 'required param \'due_date\' missing.')
+			response.should render_template(:text => 'ERROR: invalid or missing param \'due_date\'.')
 		end
 	end 
 
@@ -278,9 +279,9 @@ describe AssignmentsController do
   end
 	describe "Set the late due date with no late due date param" do
 		it "should render an error" do 
-			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			put :set_late_due_date, {:id => "id", :format => :json}
-			response.should render_template(:text => 'required param \'late_due_date\' missing.')
+			response.should render_template(:text => 'ERROR: required param \'keys\' missing.')
 		end
 	end  
 
@@ -306,7 +307,6 @@ describe AssignmentsController do
 			response.should render_template('list_student_keys')
 		end
   end
-
 
   #################### add_student_keys ###############
   describe "Addition of student keys per assignment" do
@@ -484,36 +484,6 @@ describe AssignmentsController do
 			response.should render_template('submit')
 		end
 	end
-	describe "submit with no keys param" do
-		it "should render an error" do 
-			@student = mock(:student)
-			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
-			@fake_assignment.stub_chain(:students, :find_by_key).and_return(@student)
-			put :submit, {:id => "id", :key => "key", :format => :json}
-			response.should render_template(:text => 'ERROR: student key doesn\'t exist and required param \'submission\' missing.')
-		end
-	end 
-	describe "submit and student does not exist" do
-		it "should render an error" do 
-			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
-			@students = [mock(:student), mock(:student)]
-			@fake_assignment.stub(:students).and_return(@students)
-			@students.stub(:find_by_key).and_return(nil)
-			put :submit, {:id => "id", :key => "key", :submission => @submission, :format => :json}
-			response.should render_template(:text => 'ERROR: student key doesn\'t exist.')
-		end
-	end
-	describe "submit with no keys param and student does not exist" do
-		it "should render an error" do 
-			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
-			@students = [mock(:student), mock(:student)]
-			@fake_assignment.stub(:students).and_return(@students)
-			@students.stub(:find_by_key).and_return(nil)
-			put :submit, {:id => "id", :key => "key", :format => :json}
-			response.should render_template(:text => 'ERROR: required param \'submission\' missing.')
-		end
-	end
-
 
 	############# retrieve_submissions ############
   describe "Retreive list of submissions by grading status" do
@@ -555,5 +525,50 @@ describe AssignmentsController do
 			assigns(:submissions).should == @filtered_submissions
 		end
 	end
+	describe "Retreive list of submissions by student key" do
+    before(:each) do
+      @fake_assignment = mock(:assignment)
+      @submissions_list = [mock(:submission), mock(:submission)]
+      @filtered_submissions = [mock(:submission), mock(:submission)]
+      @student = mock(:student)
+      @student_list = [mock(:student), mock(:student)]
+    end
+    it "should find the assigment by id" do
+      Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
+      @fake_assignment.stub(:submissions).and_return(@sumbission_list)
+      Student.stub(:find_all_by_key).and_return(@student_list)
+      @student_list.stub_chain(:map, :flat_map)
+      get :retrieve_submissions, {:id => "id", :keys => "key", :format => :json}
+    end
+    it "should retreive students from assignment" do
+      Assignment.stub(:find_by_id).and_return(@fake_assignment)
+      @fake_assignment.should_receive(:submissions).and_return(@sumbission_list)
+      Student.stub(:find_all_by_key).and_return(@student_list)
+      @student_list.stub_chain(:map, :flat_map)
+      get :retrieve_submissions, {:id => "id", :keys => "key", :format => :json}
+    end
+    it "should find student by key" do
+      Assignment.stub(:find_by_id).and_return(@fake_assignment)
+      @fake_assignment.stub(:submissions).and_return(@sumbission_list)
+      Student.should_receive(:find_all_by_key).and_return(@student_list)
+      @student_list.stub_chain(:map, :flat_map)
+      get :retrieve_submissions, {:id => "id", :keys => "key", :format => :json}
+    end
+    it "should get submissions from student" do
+      Assignment.stub(:find_by_id).and_return(@fake_assignment)
+      @fake_assignment.stub(:submissions).and_return(@sumbission_list)
+      Student.should_receive(:find_all_by_key).and_return(@student_list)
+      @student_list.stub_chain(:map, :flat_map)
+      get :retrieve_submissions, {:id => "id", :keys => "key", :format => :json}
+    end
+    it "should render retrieve_submission_by_status template" do
+      Assignment.stub(:find_by_id).and_return(@fake_assignment)
+      @fake_assignment.stub(:submissions).and_return(@sumbission_list)
+      Student.stub(:find_all_by_key).and_return(@student_list)
+      @student_list.stub_chain(:map, :flat_map)
+      get :retrieve_submissions, {:id => "id", :keys => "key", :format => :json}
+      response.should render_template('retrieve_submission')
+    end
+  end
 end
 
