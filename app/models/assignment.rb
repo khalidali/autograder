@@ -1,6 +1,7 @@
 class Assignment < ActiveRecord::Base
   has_many :students
   has_many :submissions, :through => :students
+  belongs_to :instructor
   
   def add_student_keys(keys)
     output_hash = Hash.new

@@ -7,7 +7,7 @@ class CreateAssignments < ActiveRecord::Migration
       t.string :prof_key
       t.string :grading_strategy
       t.text :autograder
-      t.integer :professor_id
+      t.integer :instructor_id
       t.integer :submissions_limit
       t.timestamps
     end

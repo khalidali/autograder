@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(:version => 20120429095047) do
     t.string   "prof_key"
     t.string   "grading_strategy"
     t.text     "autograder"
-    t.integer  "professor_id"
+    t.integer  "instructor_id"
     t.integer  "submissions_limit"
     t.datetime "created_at"
     t.datetime "updated_at"
