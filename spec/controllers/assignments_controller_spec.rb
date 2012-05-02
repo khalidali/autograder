@@ -382,20 +382,20 @@ describe AssignmentsController do
       @fake_assignment.stub(:instructor).and_return(@fake_instructor)
     end
 		it "should update the grading strategy for an assignement" do
-		  Assignment.stub(:valid_grading_strategy?).with(params[:grading_strategy]).and_return(true)
+		  Assignment.stub(:valid_grading_strategy?).and_return(true)
 			@fake_assignment.should_receive(:grading_strategy=).with("max")
 			@fake_assignment.stub(:save)
       put :set_grading_strategy, {:id => "id", :grading_strategy => "max", :inst_key => "inst_key", :format => :json}
 		end
 		it 'Should render the correct template' do
-		  Assignment.stub(:valid_grading_strategy?).with(params[:grading_strategy]).and_return(true)
+		  Assignment.stub(:valid_grading_strategy?).and_return(true)
 			@fake_assignment.stub(:grading_strategy=)
 			@fake_assignment.should_receive(:save)
       put :set_grading_strategy, {:id => "id", :grading_strategy => "max", :inst_key => "inst_key", :format => :json}
 			response.should render_template('set_grading_strategy')
 		end
 		it 'Should render an error if strategy is not valid' do
-		  Assignment.stub(:valid_grading_strategy?).with(params[:grading_strategy]).and_return(false)
+		  Assignment.stub(:valid_grading_strategy?).and_return(false)
       put :set_grading_strategy, {:id => "id", :grading_strategy => "blah", :inst_key => "inst_key", :format => :json}
 			response.should render_template(:text => 'ERROR: invalid grading strategy passed in.')
 		end
