@@ -21,6 +21,9 @@ Autograder::Application.routes.draw do
   get 'assignments/:id/hard_deadline(.:format)' => 'assignments#get_hard_deadline', :defaults => { :format => 'json' }
   put 'assignments/:id/hard_deadline(.:format)' => 'assignments#set_hard_deadline', :defaults => { :format => 'json' }
   
+  get 'assignments/:id/submissions_limit(.:format)' => 'assignments#get_submissions_limit', :defaults => { :format => 'json' }
+  put 'assignments/:id/submissions_limit(.:format)' => 'assignments#set_submissions_limit', :defaults => { :format => 'json' }
+  
   get 'assignments/:id/student_keys(/index(.:format))' => 'assignments#list_student_keys', :defaults => { :format => 'json' }
   put 'assignments/:id/student_keys/add(.:format)' => 'assignments#add_student_keys', :defaults => { :format => 'json' }
   put 'assignments/:id/student_keys/remove(.:format)' => 'assignments#remove_student_keys', :defaults => { :format => 'json' }

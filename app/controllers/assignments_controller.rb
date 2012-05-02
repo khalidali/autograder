@@ -67,6 +67,14 @@ class AssignmentsController < ApplicationController
     end
   end
   
+  def get_submissions_limit
+  end
+  
+  def set_submissions_limit
+    @assignment.submissions_limit = params[:submissions_limit]
+    @assignment.save
+  end
+  
   def list_student_keys
       @students = @assignment.students
   end
@@ -97,6 +105,8 @@ class AssignmentsController < ApplicationController
       render :text => 'ERROR: student key doesn\'t exist.'
     elsif not params[:submission] then
       render :text => 'ERROR: required param \'submission\' missing.'
+    elsif @assignment.submissions_limit > 0 and @student.submissions.count == @assignment.submissions_limit
+      render :text => 'ERROR: submissions limit reached.'
     else
       submission = get_file_contents(params[:submission])
       @submission = @student.add_submission(submission)
