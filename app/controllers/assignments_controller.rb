@@ -21,6 +21,9 @@ class AssignmentsController < ApplicationController
     @assignment.save()
   end
   
+  def show
+  end
+  
   def get_name
   end
   
