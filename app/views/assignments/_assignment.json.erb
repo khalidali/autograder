@@ -1,7 +1,11 @@
 {
   "id" : "<%= assignment.id %>",
+  "name" : "<%= assignment.name %>",
   "created_at" : "<%= assignment.created_at %>",
   "due_date" : "<%= assignment.due_date %>",
-  "autograder" : "<%= assignment.autograder %>",
-  "prof_key" : "<%= assignment.prof_key %>"
+  "hard_deadline" : "<%= assignment.hard_deadline %>",
+  "submissions_limit" : "<%= assignment.submissions_limit %>",
+  "grading_strategy" : "<%= assignment.grading_strategy %>",
+  "autograder" : "<% assignment.autograder %>",
+  "instructor_key" : "<%= assignment.instructor.key %>"
 }

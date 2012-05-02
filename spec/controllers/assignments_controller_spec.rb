@@ -10,29 +10,29 @@ describe AssignmentsController do
     end
     it 'should create an Assignment instance with the given parameters' do
 			@due_date = "Sun Apr 29 15:30:23".to_time
-			@late_due_date = "Sun Apr 29 15:30:23".to_time
-      Assignment.should_receive(:create).with(:prof_key => "prof_key", :due_date => @due_date, :late_due_date => @late_due_date, :autograder => nil).and_return(@fake_assignment)
+			@hard_deadline = "Sun Apr 29 15:30:23".to_time
+      Assignment.should_receive(:create).with(:prof_key => "prof_key", :due_date => @due_date, :hard_deadline => @hard_deadline, :autograder => nil).and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :late_due_date => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
+      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
     end
 		it 'should add a list of student keys to the newly created assignment' do
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.should_receive(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :late_due_date => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
+      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
 		end
 		it 'should save the assignment' do
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.should_receive(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :late_due_date => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
+      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
 		end
 		it 'should render the create template' do
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-			post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :late_due_date => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
+			post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
 			response.should render_template('create')
 		end
   end
@@ -51,7 +51,7 @@ describe AssignmentsController do
       File.stub_chain(:open, :read)
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :late_due_date => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
+      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
 		end
 		it 'should read the file content' do
 			@autograder.stub_chain(:tempfile, :path)
@@ -59,16 +59,16 @@ describe AssignmentsController do
       @file.should_receive(:read).and_return(@content)
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :late_due_date => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
+      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
 		end
 		it 'should create an Assignment instance with the given parameters' do
       @due_date = "Sun Apr 29 15:30:23".to_time
-			@late_due_date = "Sun Apr 29 15:30:23".to_time
+			@hard_deadline = "Sun Apr 29 15:30:23".to_time
       @autograder.stub_chain(:tempfile, :path)
       File.stub_chain(:open, :read).and_return(@content)
-			Assignment.should_receive(:create).with(:prof_key => "prof_key", :due_date => @due_date, :late_due_date => @late_due_date, :autograder => @content).and_return(@fake_assignment)
+			Assignment.should_receive(:create).with(:prof_key => "prof_key", :due_date => @due_date, :hard_deadline => @hard_deadline, :autograder => @content).and_return(@fake_assignment)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :late_due_date => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
+      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
     end
 		it 'should save the assignment' do
 			Assignment.stub(:create).and_return(@fake_assignment)
@@ -76,14 +76,14 @@ describe AssignmentsController do
       File.stub_chain(:open, :read)
       @fake_assignment.stub(:autograder=)
       @fake_assignment.should_receive(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :late_due_date => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
+      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
 		end
 		it 'should render the create template' do
 			@autograder.stub_chain(:tempfile, :path)
       File.stub_chain(:open, :read)
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :late_due_date => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
+      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
 			response.should render_template('create')
 		end
   end
@@ -229,59 +229,59 @@ describe AssignmentsController do
 		end
 	end 
 
-	#################### get_late_due_date ###############
-  describe "Get the late_due_date for a givin assignment" do
+	#################### get_hard_deadline ###############
+  describe "Get the hard_deadline for a givin assignment" do
     before(:each) do
       @fake_assignment = mock(:assignment)
     end
     it 'should find assignment by ID' do
       Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
-      put :get_late_due_date, {:id => "id", :format => :json}
+      put :get_hard_deadline, {:id => "id", :format => :json}
 		end
 		it 'Should render the correct template' do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
-      put :get_late_due_date, {:id => "id", :format => :json}
-			response.should render_template('get_late_due_date')
+      put :get_hard_deadline, {:id => "id", :format => :json}
+			response.should render_template('get_hard_deadline')
 		end
   end
 	
-	################ set_late_due_date ###########
+	################ set_hard_deadline ###########
   describe "Set late due date for assignment" do
     before(:each) do
       @fake_assignment = mock(:assignment)
     end
     it 'should find an assignment and change due date' do
       Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
-      @fake_assignment.stub(:late_due_date=)
+      @fake_assignment.stub(:hard_deadline=)
       @fake_assignment.stub(:save)
-      put :set_late_due_date, {:id => "id", :late_due_date => "Sun Apr 29 15:30:23", :format => :json}
+      put :set_hard_deadline, {:id => "id", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
     end
 		it 'should change the due date' do 
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
-			@late_due_date = "Sun Apr 29 15:30:23".to_time
-      @fake_assignment.should_receive(:late_due_date=).with(@late_due_date)
+			@hard_deadline = "Sun Apr 29 15:30:23".to_time
+      @fake_assignment.should_receive(:hard_deadline=).with(@hard_deadline)
       @fake_assignment.stub(:save)
-      put :set_late_due_date, {:id => "id", :late_due_date => "Sun Apr 29 15:30:23", :format => :json}
+      put :set_hard_deadline, {:id => "id", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
     end
 		it 'should save the assignment' do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
-      @fake_assignment.stub(:late_due_date=)
+      @fake_assignment.stub(:hard_deadline=)
       @fake_assignment.should_receive(:save)
-      put :set_late_due_date, {:id => "id", :late_due_date => "Sun Apr 29 15:30:23", :format => :json}
+      put :set_hard_deadline, {:id => "id", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
 		end
 		it 'should render the correct template' do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
-      @fake_assignment.stub(:late_due_date=)
+      @fake_assignment.stub(:hard_deadline=)
       @fake_assignment.stub(:save)
-			put :set_late_due_date, {:id => "id", :late_due_date => "Sun Apr 29 15:30:23", :format => :json}
-			response.should render_template('set_late_due_date')
+			put :set_hard_deadline, {:id => "id", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
+			response.should render_template('set_hard_deadline')
 		end
   end
 	describe "Set the late due date with no late due date param" do
 		it "should render an error" do 
-			Assignment.stub(:find_by_id).and_return(@fake_assignment)
-			put :set_late_due_date, {:id => "id", :format => :json}
-			response.should render_template(:text => 'ERROR: required param \'keys\' missing.')
+			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
+			put :set_hard_deadline, {:id => "id", :format => :json}
+			response.should render_template(:text => 'required param \'hard_deadline\' missing.')
 		end
 	end  
 

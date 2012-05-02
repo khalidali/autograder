@@ -1,6 +1,7 @@
 class Assignment < ActiveRecord::Base
   has_many :students
   has_many :submissions, :through => :students
+  belongs_to :instructor
   
   def add_student_keys(keys)
     output_hash = Hash.new
@@ -31,6 +32,10 @@ class Assignment < ActiveRecord::Base
   
   def has_student_key?(key)
     self.students.find_by_key(key)
+  end
+  
+  def grading_strategies
+    ['max', 'latest']
   end
   
 end
