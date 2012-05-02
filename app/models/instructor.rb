@@ -1,2 +1,3 @@
-class Instructor < ActiveRecord::Base
+class Instructor < ActiveRecord::Base 
+  has_many   :assignments
 end

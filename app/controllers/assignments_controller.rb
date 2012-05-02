@@ -1,6 +1,7 @@
 class AssignmentsController < ApplicationController
-  #before_filter :authenticate_prof, :except => [:submit]
-  before_filter :find_assignment, :except => [:create]
+  before_filter :authenticate_instructor, :only => [:create]
+  prepend_before_filter :find_assignment, :except => [:create]
+  before_filter :authenticate_instructor_with_assignment, :except => [:create, :submit]
   
   def create 
     due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date])  
@@ -8,17 +9,19 @@ class AssignmentsController < ApplicationController
     autograder = get_file_contents(params[:autograder]) unless params[:autograder] == nil
 
     
-    @assignment = Assignment.create(:prof_key => params[:prof_key], 
-                                    :due_date => due_date, 
+    @assignment = Assignment.create(:due_date => due_date, 
                                     :late_due_date => late_due_date,
                                     :autograder => autograder)
-                                    
+                       
     if(params[:student_keys] != nil)
        student_keys = parse_array(params[:student_keys])
        @added_student_keys, @rejected_student_keys = @assignment.add_student_keys(student_keys)
     end
          
     @assignment.save()
+    @instructor.assignments << @assignment 
+    
+    @instructor.save()
   end
   
   def get_autograder
@@ -37,12 +40,12 @@ class AssignmentsController < ApplicationController
   end
   
   def set_due_date
-    due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date])
+    due_date = params[:due_date].to_time unless params[:due_date] == nil or not is_valid_date?(params[:due_date])
     if(due_date != nil)
       @assignment.due_date = due_date
       @assignment.save
     else
-      render :text => 'ERROR: invalid or missing param \'due_date\'.'
+      render :text => "ERROR: #{params[:due_date]} invalid or missing param due_date."
     end
   end
   
@@ -50,7 +53,7 @@ class AssignmentsController < ApplicationController
   end
   
   def set_late_due_date
-    late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or is_valid_date?(params[:late_due_date]) 
+    late_due_date = params[:late_due_date].to_time unless params[:late_due_date] == nil or not is_valid_date?(params[:late_due_date]) 
     if(late_due_date != nil)
       @assignment.late_due_date = late_due_date
       @assignment.save
@@ -117,13 +120,22 @@ class AssignmentsController < ApplicationController
     date =~ /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}( -[0-9]{4})?$/
   end
   
-  def authenticate_prof 
-    return True
-    #Professor.find_by_prof_key(params[:prof_key])
+  def authenticate_instructor 
+    @instructor = is_instructor? params[:inst_key]
+    if not @instructor
+      render :text => 'ERROR: professor key is not valid'
+    end
   end
-   
+  
+  def authenticate_instructor_with_assignment
+    @instructor = is_instructor? params[:inst_key]
+    if not (@instructor and @assignment.instructor == @instructor)
+      render :text => 'ERROR: professor key is not valid for this assignment'
+    end
+  end
+  
   def find_assignment
-    @assignment = Assignment.find_by_id(params[:id])
+    @assignment = is_assignment? params[:id]
 
     if not @assignment then
       render :text => 'ERROR: assignment does not exist' 

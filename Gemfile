@@ -20,7 +20,6 @@ group :assets do
 end
 
 group :test, :development do
-  gem 'resque_spec'
   gem 'rspec-rails'
   gem 'factory_girl', '2.2.0'
   gem 'cucumber-rails-training-wheels' # some pre-fabbed step definitions  
@@ -38,4 +37,5 @@ group :test do
   # Pretty printed test output
   gem 'turn', '< 0.8.3', :require => false
   gem 'cucumber-rails'
+  gem 'resque_spec'
 end

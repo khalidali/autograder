@@ -15,8 +15,9 @@ ActiveRecord::Schema.define(:version => 20120429230548) do
 
   create_table "assignments", :force => true do |t|
     t.time     "due_date"
-    t.string   "prof_key"
+    t.time     "late_due_date"
     t.text     "autograder"
+    t.integer  "instructor_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

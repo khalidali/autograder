@@ -3,8 +3,8 @@ Autograder::Application.routes.draw do
   # instructor routes  
   get 'instructors(/index(.:format))' => 'instructors#index', :defaults => { :format => 'json' }
   get 'instructors/status(.:format)' => 'instructors#status', :defaults => { :format => 'json' }
-  get 'instructors/authorize(.:format)' => 'instructors#authorize', :defaults => { :format => 'json' }
-  get 'instructors/deauthorize(.:format)' => 'instructors#deauthorize', :defaults => { :format => 'json' }
+  put 'instructors/authorize(.:format)' => 'instructors#authorize', :defaults => { :format => 'json' }
+  put 'instructors/deauthorize(.:format)' => 'instructors#deauthorize', :defaults => { :format => 'json' }
 
   # assignment routes
   post 'assignments/create(.:format)' => 'assignments#create', :defaults => { :format => 'json' }
