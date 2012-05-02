@@ -2,37 +2,54 @@ require 'spec_helper'
 
 describe AssignmentsController do
 
-  
 	#################### CREATE #########################
   describe "Create an Assignment with an a list of Student Keys" do
     before(:each) do
       @fake_assignment = mock(:assignment)
+      @fake_instructor = mock(:instructor)
+      Instructor.stub(:find_by_key).with("inst_key").and_return(@fake_instructor)
     end
     it 'should create an Assignment instance with the given parameters' do
 			@due_date = "Sun Apr 29 15:30:23".to_time
 			@hard_deadline = "Sun Apr 29 15:30:23".to_time
-      Assignment.should_receive(:create).with(:prof_key => "prof_key", :due_date => @due_date, :hard_deadline => @hard_deadline, :autograder => nil).and_return(@fake_assignment)
+      Assignment.should_receive(:create).with(:name => "name", :due_date => @due_date, :hard_deadline => @hard_deadline, :grading_strategy => "max", :autograder => nil, :submissions_limit => "3").and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
+      @fake_instructor.stub(:assignments<<)
+      @fake_instructor.stub(:save)
+      post :create, {:name => "name", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :grading_strategy => "max", :submissions_limit => "3", :student_keys => "[s_key1, s_key2]", :inst_key => "inst_key", :format => :json}
     end
 		it 'should add a list of student keys to the newly created assignment' do
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.should_receive(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
+      @fake_instructor.stub(:assignments<<)
+      @fake_instructor.stub(:save)
+      post :create, {:name => "name", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :grading_strategy => "max", :submissions_limit => "3", :student_keys => "[s_key1, s_key2]", :inst_key => "inst_key", :format => :json}
 		end
 		it 'should save the assignment' do
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.should_receive(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
+      @fake_instructor.stub(:assignments<<)
+      @fake_instructor.stub(:save)
+      post :create, {:name => "name", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :grading_strategy => "max", :submissions_limit => "3", :student_keys => "[s_key1, s_key2]", :inst_key => "inst_key", :format => :json}
+		end
+		it 'add the assignment to the instructor and save it' do
+			Assignment.stub(:create).and_return(@fake_assignment)
+      @fake_assignment.stub(:add_student_keys).with(["s_key1", "s_key2"])
+      @fake_assignment.should_receive(:save)
+      @fake_instructor.should_receive(:assignments<<)
+      @fake_instructor.should_receive(:save)
+      post :create, {:name => "name", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :grading_strategy => "max", :submissions_limit => "3", :student_keys => "[s_key1, s_key2]", :inst_key => "inst_key", :format => :json}
 		end
 		it 'should render the create template' do
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-			post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :student_keys => "[s_key1, s_key2]", :format => :json}
+      @fake_instructor.stub(:assignments<<)
+      @fake_instructor.stub(:save)
+      post :create, {:name => "name", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :grading_strategy => "max", :submissions_limit => "3", :student_keys => "[s_key1, s_key2]", :inst_key => "inst_key", :format => :json}
 			response.should render_template('create')
 		end
   end
@@ -51,7 +68,7 @@ describe AssignmentsController do
       File.stub_chain(:open, :read)
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
+      post :create, {:name => "name", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :grading_strategy => "max", :submissions_limit => "3", :student_keys => "[s_key1, s_key2]", :autograder => @autograder, :inst_key => "inst_key", :format => :json}
 		end
 		it 'should read the file content' do
 			@autograder.stub_chain(:tempfile, :path)
@@ -59,16 +76,16 @@ describe AssignmentsController do
       @file.should_receive(:read).and_return(@content)
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
+      post :create, {:name => "name", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :grading_strategy => "max", :submissions_limit => "3", :student_keys => "[s_key1, s_key2]", :inst_key => "inst_key", :autograder => @autograder, :format => :json}
 		end
 		it 'should create an Assignment instance with the given parameters' do
       @due_date = "Sun Apr 29 15:30:23".to_time
 			@hard_deadline = "Sun Apr 29 15:30:23".to_time
       @autograder.stub_chain(:tempfile, :path)
       File.stub_chain(:open, :read).and_return(@content)
-			Assignment.should_receive(:create).with(:prof_key => "prof_key", :due_date => @due_date, :hard_deadline => @hard_deadline, :autograder => @content).and_return(@fake_assignment)
+			Assignment.should_receive(:create).with(:name => "name", :due_date => @due_date, :hard_deadline => @hard_deadline, :grading_strategy => "max", :autograder => @content, :submissions_limit => "3").and_return(@fake_assignment)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
+      post :create, {:name => "name", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :grading_strategy => "max", :submissions_limit => "3", :student_keys => "[s_key1, s_key2]", :inst_key => "inst_key", :autograder => @autograder, :format => :json}
     end
 		it 'should save the assignment' do
 			Assignment.stub(:create).and_return(@fake_assignment)
@@ -76,14 +93,14 @@ describe AssignmentsController do
       File.stub_chain(:open, :read)
       @fake_assignment.stub(:autograder=)
       @fake_assignment.should_receive(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
+      post :create, {:name => "name", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :grading_strategy => "max", :submissions_limit => "3", :student_keys => "[s_key1, s_key2]", :inst_key => "inst_key", :autograder => @autograder, :format => :json}
 		end
 		it 'should render the create template' do
 			@autograder.stub_chain(:tempfile, :path)
       File.stub_chain(:open, :read)
 			Assignment.stub(:create).and_return(@fake_assignment)
       @fake_assignment.stub(:save)
-      post :create, {:prof_key => "prof_key", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :autograder => @autograder, :format => :json}
+      post :create, {:name => "name", :due_date => "Sun Apr 29 15:30:23", :hard_deadline => "Sun Apr 29 15:30:23", :grading_strategy => "max", :submissions_limit => "3", :student_keys => "[s_key1, s_key2]", :inst_key => "inst_key", :autograder => @autograder, :format => :json}
 			response.should render_template('create')
 		end
   end
@@ -95,11 +112,11 @@ describe AssignmentsController do
     end
     it 'should find assignment by ID' do
       Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
-      put :get_autograder, {:id => "id", :format => :json}
+      put :get_autograder, {:id => "id",:inst_key => "inst_key", :format => :json}
 		end
 		it 'Should render the correct template' do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
-      put :get_autograder, {:id => "id", :format => :json}
+      put :get_autograder, {:id => "id",:inst_key => "inst_key", :format => :json}
 			response.should render_template('get_autograder')
 		end
   end  
@@ -119,7 +136,7 @@ describe AssignmentsController do
       File.stub_chain(:open, :read)
       @fake_assignment.stub(:autograder=)
       @fake_assignment.stub(:save)
-      put :set_autograder, {:id => "id", :autograder => @autograder, :format => :json}
+      put :set_autograder, {:id => "id",:inst_key => "inst_key", :autograder => @autograder, :format => :json}
     end
     it 'should get the file path from the params' do
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
@@ -128,7 +145,7 @@ describe AssignmentsController do
       File.stub_chain(:open, :read)
       @fake_assignment.stub(:autograder=)
       @fake_assignment.stub(:save)
-      put :set_autograder, {:id => "id", :autograder => @autograder, :format => :json}
+      put :set_autograder, {:id => "id",:inst_key => "inst_key", :autograder => @autograder, :format => :json}
 		end
 		it 'should read the file content' do
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
@@ -137,7 +154,7 @@ describe AssignmentsController do
       @file.should_receive(:read).and_return(@content)
       @fake_assignment.stub(:autograder=).with(@content)
       @fake_assignment.stub(:save)
-      put :set_autograder, {:id => "id", :autograder => @autograder, :format => :json}
+      put :set_autograder, {:id => "id",:inst_key => "inst_key", :autograder => @autograder, :format => :json}
 		end
 		it 'should add an autograder to the assignment' do
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
@@ -145,7 +162,7 @@ describe AssignmentsController do
       File.stub_chain(:open, :read).and_return(@content)
       @fake_assignment.should_receive(:autograder=).with(@content)
       @fake_assignment.stub(:save)
-      put :set_autograder, {:id => "id", :autograder => @autograder, :format => :json}
+      put :set_autograder, {:id => "id",:inst_key => "inst_key", :autograder => @autograder, :format => :json}
 		end
 		it 'should save the assignment' do
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
@@ -153,7 +170,7 @@ describe AssignmentsController do
       File.stub_chain(:open, :read)
       @fake_assignment.stub(:autograder=)
       @fake_assignment.should_receive(:save)
-      put :set_autograder, {:id => "id", :autograder => @autograder, :format => :json}
+      put :set_autograder, {:id => "id",:inst_key => "inst_key", :autograder => @autograder, :format => :json}
 		end
 		it 'should render the create template' do
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
@@ -161,14 +178,14 @@ describe AssignmentsController do
       File.stub_chain(:open, :read)
       @fake_assignment.stub(:autograder=)
       @fake_assignment.stub(:save)
-      put :set_autograder, {:id => "id", :autograder => @autograder, :format => :json}
+      put :set_autograder, {:id => "id",:inst_key => "inst_key", :autograder => @autograder, :format => :json}
 			response.should render_template('set_autograder')
 		end
   end
 	describe "Set the Autograder with no autograder param" do
 		it "should render an error" do 
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
-			put :set_autograder, {:id => "id", :format => :json}
+			put :set_autograder, {:id => "id",:inst_key => "inst_key", :format => :json}
 			response.should render_template(:text => 'ERROR: required param \'autograder\' missing.')
 		end
 	end
@@ -180,11 +197,11 @@ describe AssignmentsController do
     end
     it 'should find assignment by ID' do
       Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
-      put :get_due_date, {:id => "id", :format => :json}
+      put :get_due_date, {:id => "id",:inst_key => "inst_key", :format => :json}
 		end
 		it 'Should render the correct template' do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
-      put :get_due_date, {:id => "id", :format => :json}
+      put :get_due_date, {:id => "id",:inst_key => "inst_key", :format => :json}
 			response.should render_template('get_due_date')
 		end
   end
@@ -198,33 +215,33 @@ describe AssignmentsController do
       Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
       @fake_assignment.stub(:due_date=)
       @fake_assignment.stub(:save)
-      put :set_due_date, {:id => "id", :due_date => "Sun Apr 29 15:30:23", :format => :json}
+      put :set_due_date, {:id => "id",:inst_key => "inst_key", :due_date => "Sun Apr 29 15:30:23", :format => :json}
     end
 		it 'should change the due date' do 
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@due_date = "Sun Apr 29 15:30:23".to_time
       @fake_assignment.should_receive(:due_date=).with(@due_date)
       @fake_assignment.stub(:save)
-      put :set_due_date, {:id => "id", :due_date => "Sun Apr 29 15:30:23", :format => :json}
+      put :set_due_date, {:id => "id",:inst_key => "inst_key", :due_date => "Sun Apr 29 15:30:23", :format => :json}
     end
 		it 'should save the assignment' do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.stub(:due_date=)
       @fake_assignment.should_receive(:save)
-      put :set_due_date, {:id => "id", :due_date => "Sun Apr 29 15:30:23", :format => :json}
+      put :set_due_date, {:id => "id",:inst_key => "inst_key", :due_date => "Sun Apr 29 15:30:23", :format => :json}
 		end
 		it 'should render the correct template' do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.stub(:due_date=)
       @fake_assignment.stub(:save)
-			put :set_due_date, {:id => "id", :due_date => "Sun Apr 29 15:30:23", :format => :json}
+			put :set_due_date, {:id => "id", :inst_key => "inst_key", :due_date => "Sun Apr 29 15:30:23", :format => :json}
 			response.should render_template('set_due_date')
 		end
   end
 	describe "Set the due date with no due date param" do
 		it "should render an error" do 
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
-			put :set_due_date, {:id => "id", :format => :json}
+			put :set_due_date, {:id => "id", :inst_key => "inst_key", :format => :json}
 			response.should render_template(:text => 'ERROR: invalid or missing param \'due_date\'.')
 		end
 	end 
@@ -236,11 +253,11 @@ describe AssignmentsController do
     end
     it 'should find assignment by ID' do
       Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
-      put :get_hard_deadline, {:id => "id", :format => :json}
+      put :get_hard_deadline, {:id => "id", :inst_key => "inst_key", :format => :json}
 		end
 		it 'Should render the correct template' do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
-      put :get_hard_deadline, {:id => "id", :format => :json}
+      put :get_hard_deadline, {:id => "id", :inst_key => "inst_key", :format => :json}
 			response.should render_template('get_hard_deadline')
 		end
   end
@@ -254,33 +271,33 @@ describe AssignmentsController do
       Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
       @fake_assignment.stub(:hard_deadline=)
       @fake_assignment.stub(:save)
-      put :set_hard_deadline, {:id => "id", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
+      put :set_hard_deadline, {:id => "id", :inst_key => "inst_key", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
     end
 		it 'should change the due date' do 
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@hard_deadline = "Sun Apr 29 15:30:23".to_time
       @fake_assignment.should_receive(:hard_deadline=).with(@hard_deadline)
       @fake_assignment.stub(:save)
-      put :set_hard_deadline, {:id => "id", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
+      put :set_hard_deadline, {:id => "id", :inst_key => "inst_key", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
     end
 		it 'should save the assignment' do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.stub(:hard_deadline=)
       @fake_assignment.should_receive(:save)
-      put :set_hard_deadline, {:id => "id", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
+      put :set_hard_deadline, {:id => "id", :inst_key => "inst_key", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
 		end
 		it 'should render the correct template' do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.stub(:hard_deadline=)
       @fake_assignment.stub(:save)
-			put :set_hard_deadline, {:id => "id", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
+			put :set_hard_deadline, {:id => "id", :inst_key => "inst_key", :hard_deadline => "Sun Apr 29 15:30:23", :format => :json}
 			response.should render_template('set_hard_deadline')
 		end
   end
 	describe "Set the late due date with no late due date param" do
 		it "should render an error" do 
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
-			put :set_hard_deadline, {:id => "id", :format => :json}
+			put :set_hard_deadline, {:id => "id", :inst_key => "inst_key", :format => :json}
 			response.should render_template(:text => 'required param \'hard_deadline\' missing.')
 		end
 	end  
@@ -293,17 +310,17 @@ describe AssignmentsController do
     it 'should find assignment by ID' do
       Assignment.should_receive(:find_by_id).with("id").and_return(@assignment)
 			@assignment.stub(:students)
-      put :list_student_keys, {:id => "id", :format => :json}
+      put :list_student_keys, {:id => "id", :inst_key => "inst_key", :format => :json}
 		end
 		it "should retrieve students from assignment" do
 			Assignment.stub(:find_by_id).and_return(@assignment)
 			@assignment.should_receive(:students)
-      put :list_student_keys, {:id => "id", :format => :json}
+      put :list_student_keys, {:id => "id", :inst_key => "inst_key", :format => :json}
 		end
 		it 'Should render the correct template' do
       Assignment.stub(:find_by_id).and_return(@assignment)
 			@assignment.stub(:students)
-      put :list_student_keys, {:id => "id", :format => :json}
+      put :list_student_keys, {:id => "id", :inst_key => "inst_key", :format => :json}
 			response.should render_template('list_student_keys')
 		end
   end
@@ -317,32 +334,32 @@ describe AssignmentsController do
       Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-      put :add_student_keys, {:id => "id", :keys => "[s_key1, s_key2]", :format => :json}
+      put :add_student_keys, {:id => "id", :inst_key => "inst_key", :keys => "[s_key1, s_key2]", :format => :json}
     end 
     it 'should add a student-keys' do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.should_receive(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-      put :add_student_keys, {:id => "id", :keys => "[s_key1, s_key2]", :format => :json}
+      put :add_student_keys, {:id => "id", :inst_key => "inst_key", :keys => "[s_key1, s_key2]", :format => :json}
     end
 		it 'should save the assignment' do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.should_receive(:save)
-      put :add_student_keys, {:id => "id", :keys => "[s_key1, s_key2]", :format => :json}
+      put :add_student_keys, {:id => "id", :inst_key => "inst_key", :keys => "[s_key1, s_key2]", :format => :json}
 		end
 		it 'should render the add student keys template' do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.stub(:add_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-			put :add_student_keys, {:id => "id", :keys => "[s_key1, s_key2]", :format => :json}
+			put :add_student_keys, {:id => "id", :inst_key => "inst_key", :keys => "[s_key1, s_key2]", :format => :json}
 			response.should render_template('add_student_keys')
 		end
   end
 	describe "Add student keys with no keys param" do
 		it "should render an error" do 
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
-			put :add_student_keys, {:id => "id", :format => :json}
+			put :add_student_keys, {:id => "id", :inst_key => "inst_key", :format => :json}
 			response.should render_template(:text => 'ERROR: required param \'keys\' missing.')
 		end
 	end  
@@ -357,32 +374,32 @@ describe AssignmentsController do
       Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
       @fake_assignment.stub(:remove_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-      put :remove_student_keys, {:id => "id", :keys => "[s_key1, s_key2]", :format => :json}
+      put :remove_student_keys, {:id => "id", :inst_key => "inst_key", :keys => "[s_key1, s_key2]", :format => :json}
     end 
     it 'should delete a student-keys' do 
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.should_receive(:remove_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-      put :remove_student_keys, {:id => "id", :keys => "[s_key1, s_key2]", :format => :json}
+      put :remove_student_keys, {:id => "id", :inst_key => "inst_key", :keys => "[s_key1, s_key2]", :format => :json}
     end
 		it 'should save the assignment' do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.stub(:remove_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.should_receive(:save)
-      put :remove_student_keys, {:id => "id", :keys => "[s_key1, s_key2]", :format => :json}
+      put :remove_student_keys, {:id => "id", :inst_key => "inst_key", :keys => "[s_key1, s_key2]", :format => :json}
 		end
 		it 'should render the remove student keys template' do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.stub(:remove_student_keys).with(["s_key1", "s_key2"])
       @fake_assignment.stub(:save)
-			put :remove_student_keys, {:id => "id", :keys => "[s_key1, s_key2]", :format => :json}
+			put :remove_student_keys, {:id => "id", :inst_key => "inst_key", :keys => "[s_key1, s_key2]", :format => :json}
 			response.should render_template('remove_student_keys')
 		end  
   end
 	describe "Remove student keys with no keys param" do
 		it "should render an error" do 
 			Assignment.stub(:find_by_id).with("id").and_return(@fake_assignment)
-			put :remove_student_keys, {:id => "id", :format => :json}
+			put :remove_student_keys, {:id => "id", :inst_key => "inst_key", :format => :json}
 			response.should render_template(:text => 'ERROR: required param \'keys\' missing.')
 		end
 	end
@@ -496,32 +513,32 @@ describe AssignmentsController do
 			Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
 			@fake_assignment.stub(:submissions).and_return(@submissions_list)
 			@submissions_list.stub(:find_all_by_status).and_return(@filtered_submissions)
-			get :retrieve_submissions, {:id => "id", :status => "status", :format => :json}
+			get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :status => "status", :format => :json}
 		end
 		it "should retreive submissions from assignment" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.should_receive(:submissions).and_return(@submissions_list)
 			@submissions_list.stub(:find_all_by_status).and_return(@filtered_submissions)
-			get :retrieve_submissions, {:id => "id", :status => "status", :format => :json}
+			get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :status => "status", :format => :json}
 		end
 		it "should filter submissions by status" do 
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:submissions).and_return(@submissions_list)
 			@submissions_list.should_receive(:find_all_by_status).with("status").and_return(@filtered_submission)
-			get :retrieve_submissions, {:id => "id", :status => "status", :format => :json}
+			get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :status => "status", :format => :json}
 		end
 		it "should render retrieve_submission_by_status template" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:submissions).and_return(@submissions_list)
 			@submissions_list.stub(:find_all_by_status).and_return(@filtered_submissions)
-			get :retrieve_submissions, {:id => "id", :status => "status", :format => :json}
+			get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :status => "status", :format => :json}
 			response.should render_template('retrieve_submissions')
 		end
 		it "should make the results available to the template" do
 			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.stub(:submissions).and_return(@submissions_list)
 			@submissions_list.stub(:find_all_by_status).and_return(@filtered_submissions)
-			get :retrieve_submissions, {:id => "id", :status => "status", :format => :json}
+			get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :status => "status", :format => :json}
 			assigns(:submissions).should == @filtered_submissions
 		end
 	end
@@ -538,35 +555,35 @@ describe AssignmentsController do
       @fake_assignment.stub(:submissions).and_return(@sumbission_list)
       Student.stub(:find_all_by_key).and_return(@student_list)
       @student_list.stub_chain(:map, :flat_map)
-      get :retrieve_submissions, {:id => "id", :keys => "key", :format => :json}
+      get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :keys => "key", :format => :json}
     end
     it "should retreive students from assignment" do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.should_receive(:submissions).and_return(@sumbission_list)
       Student.stub(:find_all_by_key).and_return(@student_list)
       @student_list.stub_chain(:map, :flat_map)
-      get :retrieve_submissions, {:id => "id", :keys => "key", :format => :json}
+      get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :keys => "key", :format => :json}
     end
     it "should find student by key" do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.stub(:submissions).and_return(@sumbission_list)
       Student.should_receive(:find_all_by_key).and_return(@student_list)
       @student_list.stub_chain(:map, :flat_map)
-      get :retrieve_submissions, {:id => "id", :keys => "key", :format => :json}
+      get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :keys => "key", :format => :json}
     end
     it "should get submissions from student" do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.stub(:submissions).and_return(@sumbission_list)
       Student.should_receive(:find_all_by_key).and_return(@student_list)
       @student_list.stub_chain(:map, :flat_map)
-      get :retrieve_submissions, {:id => "id", :keys => "key", :format => :json}
+      get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :keys => "key", :format => :json}
     end
     it "should render retrieve_submission_by_status template" do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
       @fake_assignment.stub(:submissions).and_return(@sumbission_list)
       Student.stub(:find_all_by_key).and_return(@student_list)
       @student_list.stub_chain(:map, :flat_map)
-      get :retrieve_submissions, {:id => "id", :keys => "key", :format => :json}
+      get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :keys => "key", :format => :json}
       response.should render_template('retrieve_submission')
     end
   end
