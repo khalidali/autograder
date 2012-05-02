@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   end
   
   def is_assignment?(id)
-    Assignment.find id
+    Assignment.find_by_id id
   end
   
   def is_instructor?(key)
