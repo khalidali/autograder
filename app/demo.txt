@@ -1,0 +1,8 @@
+curl -X PUT http://localhost:3000/instructors/authorize -d "keys=[armando]&super_key=1234567890"
+rake assignment:create[armando]
+curl -X PUT http://localhost:3000/assignments/1/grading_strategy -d "grading_strategy=latest&inst_key=armando"
+curl -X PUT http://localhost:3000/assignments/1/student_keys/add -d "keys=[omar,roberto]&inst_key=armando"
+curl -X PUT http://localhost:3000/assignments/1/hard_deadline -d "inst_key=armando&hard_deadline=2020-01-01 10:03:11 UTC"
+curl -X PUT http://localhost:3000/assignments/1/submissions_limit -d "submissions_limit=0&inst_key=armando"
+rake submission:submit[1,omar,student_code.rb]
+

@@ -126,13 +126,14 @@ class AssignmentsController < ApplicationController
       render :text => 'ERROR: student key doesn\'t exist.'
     elsif not params[:submission] then
       render :text => 'ERROR: required param \'submission\' missing.'
+    elsif Time.now > @assignment.hard_deadline
+      render :text => 'ERROR: assignment\'s hard deadline already passed.'
     elsif @assignment.submissions_limit > 0 and @student.submissions.count == @assignment.submissions_limit
       render :text => 'ERROR: submissions limit reached.'
     else
       submission = get_file_contents(params[:submission])
       @submission = @student.add_submission(submission)
       @student.save()
-      @submission_successful = true
     end
   end
   
@@ -153,7 +154,7 @@ class AssignmentsController < ApplicationController
   end
   
   def is_valid_date?(date)
-    date =~ /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}( -[0-9]{4})?$/
+    date =~ /^\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}( -\d{4}| [A-z]{3})?$/
   end
   
   def authenticate_instructor 
