@@ -7,11 +7,11 @@ class AssignmentsController < ApplicationController
     due_date = params[:due_date].to_time unless params[:due_date] == nil or not is_valid_date?(params[:due_date])  
     hard_deadline = params[:hard_deadline].to_time unless params[:hard_deadline] == nil or not is_valid_date?(params[:hard_deadline])         
     autograder = get_file_contents(params[:autograder]) unless params[:autograder] == nil
-    grading_strategy = params[:grading_strategy] if is_grading_strategy?(params[:grading_strategy])
+    grading_strategy = params[:grading_strategy] if Assignment.valid_grading_strategy?(params[:grading_strategy])
     
     @assignment = Assignment.create(:name => (params[:name] or "name"),
-                                    :due_date => due_date, 
-                                    :hard_deadline => hard_deadline,
+                                    :due_date => (due_date or (Time.now + 60*60*24*3)),
+                                    :hard_deadline => (hard_deadline or (Time.now + 60*60*24*3)),
                                     :grading_strategy => (grading_strategy or 'max'),
                                     :autograder => autograder,
                                     :submissions_limit => (params[:submissions_limit] or 0))
@@ -83,7 +83,7 @@ class AssignmentsController < ApplicationController
   end
   
   def set_grading_strategy
-    if not @assignment.grading_strategies.include? params[:grading_strategy] then
+    if not Assignment.valid_grading_strategy? params[:grading_strategy] then
       render :text => 'ERROR: invalid grading strategy passed in.'
     else
       @assignment.grading_strategy = params[:grading_strategy]

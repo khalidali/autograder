@@ -1,6 +1,10 @@
 Given /^an assignment with id "([^"]*)" exists for instructor "([^"]*)"$/ do |id, inst|
   instructor = Instructor.create :key => inst
-  instructor.assignments << Assignment.create(:id => id, :submissions_limit => 0)
+  instructor.assignments << Assignment.create(:id => id,
+                                              :due_date => Time.now + 60*60*24*3,
+                                              :hard_deadline => Time.now + 60*60*24*3,
+                                              :grading_strategy => 'max',
+                                              :submissions_limit => 0)
   instructor.save
 end
 
@@ -54,26 +58,33 @@ Then /^I should get valid JSON$/ do
 end
 
 Given /^the super key is "([^"]*)"$/ do |arg1|
-  pending # express the regexp above with the code you wish you had
+  Instructor::SuperUser.key = arg1
 end
 
 Given /^the instructor key "([^"]*)" is not authorized$/ do |arg1|
-  Instructor.find_by_key(arg1).destroy
+  Instructor.find_by_key(arg1).destroy if Instructor.find_by_key(arg1)
 end
 
-When /^I add the new instructor key "([^"]*)"$/ do |arg1|
-  step "I send a PUT request to \"/instructors/authorize\" with the following: \"keys=[#{arg1}]\""
+When /^I add the new instructor key "([^"]*)" using the superkey "([^"]*)"$/ do |arg1, arg2|
+  step "I send a PUT request to \"/instructors/authorize\" with the following: \"keys=[#{arg1}]&super_key=#{arg2}\""
 end
 
 Given /^the instructor key "([^"]*)" is authorized$/ do |arg1|
   Instructor.create(:key => arg1)
 end
 
-Then /^"([^"]*)" changes the late submission due date of assignment (\d+) to (.*)$/ do |inst, arg1, arg2|
+When /^"([^"]*)" changes the hard deadline of assignment (\d+) to "([^"]*)"$/ do |inst, arg1, arg2|
   step "I send a PUT request to \"/assignments/#{arg1}/hard_deadline\" with the following: \"inst_key=#{inst}&hard_deadline=#{arg2}\""
 end
 
 Given /^all submissions of assignment "([^"]*)" are completed$/ do |arg1|
   Assignment.find(arg1).submissions.each { |s| s.status = 'completed' and s.save }
 end
+
+Given /^the student key "([^"]*)" is authorized for assignment "([^"]*)"$/ do |arg1, arg2|
+  a = Assignment.find(arg2)
+  a.add_student_keys([arg1]) if a
+  a.save if a
+end
+
 

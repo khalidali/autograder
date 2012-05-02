@@ -7,14 +7,15 @@ Feature: Authorize instructor keys
     Scenario: Authorize new instructor key
       Given the super key is "1234567890"
       And the instructor key "armando" is not authorized
-      When I add the new instructor key "armando"
+      When I add the new instructor key "armando" using the superkey "1234567890"
       Then the response should be "200"
-      And the response should contain "Instructor key authorized"
+      And I print the response
+      And the response should contain "authorized"
 
     Scenario: Authorize an existing instructor key
       Given the super key is "1234567890"
       And the instructor key "armando" is authorized
-      When I add the new instructor key "armando"
+      When I add the new instructor key "armando" using the superkey "1234567890"
       Then the response should be "200"
-      And the response should contain "Instructor key already authorized"
-      And the response should not contain "Instructor key authorized"
+      And I print the response
+      And the response should contain "ERROR: Key already authorized"
