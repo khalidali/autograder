@@ -1,6 +1,6 @@
 Given /^an assignment with id "([^"]*)" exists for instructor "([^"]*)"$/ do |id, inst|
   instructor = Instructor.create :key => inst
-  instructor.assignments << Assignment.create(:id => id)
+  instructor.assignments << Assignment.create(:id => id, :submissions_limit => 0)
   instructor.save
 end
 
@@ -71,5 +71,9 @@ end
 
 Then /^"([^"]*)" changes the late submission due date of assignment (\d+) to (.*)$/ do |inst, arg1, arg2|
   step "I send a PUT request to \"/assignments/#{arg1}/hard_deadline\" with the following: \"inst_key=#{inst}&hard_deadline=#{arg2}\""
+end
+
+Given /^all submissions of assignment "([^"]*)" are completed$/ do |arg1|
+  Assignment.find(arg1).submissions.each { |s| s.status = 'completed' and s.save }
 end
 
