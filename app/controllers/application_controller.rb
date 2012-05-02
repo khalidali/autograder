@@ -20,4 +20,8 @@ class ApplicationController < ActionController::Base
     Student.find_by_key key
   end
   
+  def is_grading_strategy?(strategy)
+    valid_strategies = ["max","latest"]
+    valid_strategies.include? strategy
+  end
 end

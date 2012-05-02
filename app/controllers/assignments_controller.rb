@@ -7,11 +7,14 @@ class AssignmentsController < ApplicationController
     due_date = params[:due_date].to_time unless params[:due_date] == nil or is_valid_date?(params[:due_date])  
     hard_deadline = params[:hard_deadline].to_time unless params[:hard_deadline] == nil or is_valid_date?(params[:hard_deadline])         
     autograder = get_file_contents(params[:autograder]) unless params[:autograder] == nil
-
+    grading_strategy = params[:grading_strategy] if is_grading_strategy?(params[:grading_strategy])
     
-    @assignment = Assignment.create(:due_date => due_date, 
+    @assignment = Assignment.create(:name => params[:name],
+                                    :due_date => due_date, 
                                     :hard_deadline => hard_deadline,
-                                    :autograder => autograder)
+                                    :grading_strategy => grading_strategy,
+                                    :autograder => autograder,
+                                    :submissions_limit => params[:submissions_limit])
                        
     if(params[:student_keys] != nil)
        student_keys = parse_array(params[:student_keys])
