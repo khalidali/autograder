@@ -1,6 +1,8 @@
 
-Given /^an assignment with id "([^"]*)" exists$/ do |arg1|
-  Assignment.create :id => arg1
+Given /^an assignment with id "([^"]*)" exists for instructor "([^"]*)"$/ do |arg1, arg2|
+  instructor = Instructor.create :key => arg2
+  instructor.assignments << Assignment.create(:id => arg1)
+  instructor.save
 end
 
 Given /^the test db is populated$/ do
@@ -58,5 +60,25 @@ Then /^I should get valid JSON$/ do
   assert_nothing_raised do 
     ActiveSupport::JSON.decode(@response.body) 
   end
+end
+
+Given /^the super key is "([^"]*)"$/ do |arg1|
+  pending # express the regexp above with the code you wish you had
+end
+
+Given /^the instructor key "([^"]*)" is not authorized$/ do |arg1|
+  Instructor.find_by_key(arg1).destroy
+end
+
+When /^I add the new instructor key "([^"]*)"$/ do |arg1|
+  step "I send a PUT request to \"/instructors/authorize\" with the following: \"keys=[#{arg1}]\""
+end
+
+Given /^the instructor key "([^"]*)" is authorized$/ do |arg1|
+  Instructor.create(:key => arg1)
+end
+
+Then /^I change the late submission due date of assignment (\d+) to (.*)$/ do |arg1, arg2|
+  step "I send a PUT request to \"/assignments/#{arg1}/hard_deadline\" with the following: \"hard_deadline=#{arg2}\""
 end
 
