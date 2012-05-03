@@ -104,14 +104,6 @@ namespace :assignment do
     end
     a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit -F submission=@#{submission} -F "key=#{args[:key]}" 2>&1`
     puts a
-    a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit -F submission=@#{submission} -F "key=#{args[:key]}" 2>&1`
-    puts a
-    a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit -F submission=@#{submission} -F "key=#{args[:key]}" 2>&1`
-    puts a
-    a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit -F submission=@#{submission} -F "key=#{args[:key]}" 2>&1`
-    puts a
-    a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit -F submission=@#{submission} -F "key=#{args[:key]}" 2>&1`
-    puts a
   end
   
   desc "To retrieve all submissions to the assignment"
