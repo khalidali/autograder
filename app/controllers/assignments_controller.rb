@@ -139,10 +139,10 @@ class AssignmentsController < ApplicationController
   
   def retrieve_submissions
       @submissions = @assignment.submissions
-    if(params[:keys])
+    if(params[:keys] and not @submissions.empty?)
       @submissions = Student.find_all_by_key(parse_array(params[:keys])).map{|student| student.submissions}.flat_map{|i| i}
     end
-    if(params[:status])
+    if(params[:status] and not @submissions.empty?)
       @submissions = @submissions.find_all_by_status(params[:status])
     end
   end

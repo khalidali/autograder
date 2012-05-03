@@ -12,15 +12,42 @@ namespace :assignment do
     else
       student = "#{args[:student_keys]}".gsub(/[;]/, ',')
     end
-    date = Time.new.to_s
+    date = (Time.new + 60*60*24*3).to_s
     
     puts "Rake Task: Creates an assignment with given arguments"
     a = `curl -s -X POST /dev/null localhost:3000/assignments/create.json -F "inst_key=#{args[:inst_key]}" -F "student_keys=[#{student}]" -F "name=cs169_lab1" -F "due_date=#{date}" -F "hard_deadline=#{date}" -F "grading_strategy=max" -F "submissions_limit=1" -F autograder=@#{autograder} 2>&1`
     puts a
   end
   
+  desc"To show an assignment"
+  task :show, [:id, :inst_key] => [:environment] do |t, args|
+    puts "Rake Task: To show an assignment"
+    a = `curl -s -X GET  -d "inst_key=#{args[:inst_key]}" /dev/null localhost:3000/assignments/#{args[:id]}/show.json 2>&1`
+    puts a
+  end
+  
+  desc "To set the autograder"
+  task :set_autograder, [:id, :autograder, :inst_key] => [:environment] do |t, args|
+    root = Rails.root + "test/fixtures"
+    
+    puts "Rake Task: To update the autograder"
+    a = `curl -s -X PUT -F autograder=@#{root + args[:autograder]} -F "inst_key=#{args[:inst_key]}" /dev/null localhost:3000/assignments/#{args[:id]}/autograder 2>&1`
+    puts a
+  end
+  
+  desc "To get the autograder"
+  task :get_autograder, [:id] => [:environment, :inst_key] do |t, args|
+    root = Rails.root + "test/fixtures"
+    
+    puts "Rake Task: To update the autograder"
+    a = `curl -s -X GET /dev/null -d "inst_key=#{args[:inst_key]}" localhost:3000/assignments/#{args[:id]}/autograder 2>&1`
+    puts a
+  end
+  
+  
+  
   desc"To change due date of an assignment"
-  task :set_due_date, [:id, :inst_key, :date] => [:environment] do |t, args|
+  task :set_due_date, [:id, :date, :inst_key] => [:environment] do |t, args|
     root = Rails.root
     date = args[:date]
     date = Time.new.to_s if date == nil
@@ -37,6 +64,7 @@ namespace :assignment do
     puts a
   end
   
+  
   desc"To list student keys"
   task :list_student_keys, [:id, :inst_key] => [:environment] do |t, args|
     root = Rails.root
@@ -47,7 +75,7 @@ namespace :assignment do
   end
   
   desc"To remove student keys"
-  task :remove_student_keys, [:id, :inst_key, :keys] => [:environment] do |t, args|
+  task :remove_student_keys, [:id, :keys, :inst_key] => [:environment] do |t, args|
     root = Rails.root
     
     puts "Rake Task: To remove student keys"
@@ -57,7 +85,7 @@ namespace :assignment do
   end
 
   desc"To add student keys"
-  task :add_student_keys, [:id, :inst_key, :keys] => [:environment] do |t, args|
+  task :add_student_keys, [:id, :keys, :inst_key] => [:environment] do |t, args|
     root = Rails.root
     
     puts "Rake Task: To add student keys"
@@ -66,21 +94,26 @@ namespace :assignment do
     puts a
   end
 
-  desc "To set the autograder"
-  task :set_autograder, [:id, :inst_key, :autograder] => [:environment] do |t, args|
-    root = Rails.root + "test/fixtures"
-    
-    puts "Rake Task: To update the autograder"
-    a = `curl -s -X PUT -F autograder=@#{root + args[:autograder]} -F "inst_key=#{args[:inst_key]}" /dev/null localhost:3000/assignments/#{args[:id]}/autograder 2>&1`
+  desc "To submit an assignment with a student_key"
+  task :submit, [:id, :key, :submission] => [:environment] do |t, args|
+    puts "Rake Task: To submit an assignment with a student_key"
+    if(args[:submission] == nil)
+      submission = Rails.root + "test/fixtures" + "student_code.rb"
+    else
+      submission = Rails.root + "test/fixtures" + args[:submission]
+    end
+    a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit -F submission=@#{submission} -F "key=#{args[:key]}" 2>&1`
     puts a
   end
-  desc "To get the autograder"
-  task :get_autograder, [:id] => [:environment, :inst_key] do |t, args|
-    root = Rails.root + "test/fixtures"
-    
-    puts "Rake Task: To update the autograder"
-    a = `curl -s -X GET /dev/null -d "inst_key=#{args[:inst_key]}" localhost:3000/assignments/#{args[:id]}/autograder 2>&1`
+  
+  desc "To retrieve all submissions to the assignment"
+  task :retrieve_submissions, [:id, :inst_key, :keys, :status]  => [:environment] do |t, args|
+    puts "Rake Task: To retrieve all submissions to the assignment"
+    student = "#{args[:keys]}".gsub(/[;]/, ',')
+    a = `curl -s -X GET /dev/null localhost:3000/assignments/#{args[:id]}/submissions -d "inst_key=#{args[:inst_key]}" -d "keys=[#{student}]" -d "status=#{args[:status]}" 2>&1`
     puts a
   end
+  
+  
 end
 

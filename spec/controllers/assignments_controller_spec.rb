@@ -674,7 +674,6 @@ describe AssignmentsController do
 			get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :status => "status", :format => :json}
 		end
 		it "should retreive submissions from assignment" do
-			Assignment.stub(:find_by_id).and_return(@fake_assignment)
 			@fake_assignment.should_receive(:submissions).and_return(@submissions_list)
 			@submissions_list.stub(:find_all_by_status).and_return(@filtered_submissions)
 			get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :status => "status", :format => :json}
@@ -714,38 +713,43 @@ describe AssignmentsController do
     end
     it "should find the assigment by id" do
       Assignment.should_receive(:find_by_id).with("id").and_return(@fake_assignment)
-      @fake_assignment.stub(:submissions).and_return(@sumbission_list)
+      @fake_assignment.stub(:submissions).and_return(@submissions_list)
+      @submissions_list.stub(:empty?)
       Student.stub(:find_all_by_key).and_return(@student_list)
       @student_list.stub_chain(:map, :flat_map)
       get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :keys => "key", :format => :json}
     end
     it "should retreive students from assignment" do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
-      @fake_assignment.should_receive(:submissions).and_return(@sumbission_list)
+      @fake_assignment.should_receive(:submissions).and_return(@submissions_list)
+      @submissions_list.stub(:empty?)
       Student.stub(:find_all_by_key).and_return(@student_list)
       @student_list.stub_chain(:map, :flat_map)
       get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :keys => "key", :format => :json}
     end
     it "should find student by key" do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
-      @fake_assignment.stub(:submissions).and_return(@sumbission_list)
+      @fake_assignment.stub(:submissions).and_return(@submissions_list)
+      @submissions_list.stub(:empty?)
       Student.should_receive(:find_all_by_key).and_return(@student_list)
       @student_list.stub_chain(:map, :flat_map)
       get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :keys => "key", :format => :json}
     end
     it "should get submissions from student" do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
-      @fake_assignment.stub(:submissions).and_return(@sumbission_list)
+      @fake_assignment.stub(:submissions).and_return(@submissions_list)
+      @submissions_list.stub(:empty?)
       Student.should_receive(:find_all_by_key).and_return(@student_list)
       @student_list.stub_chain(:map, :flat_map)
       get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :keys => "key", :format => :json}
     end
     it "should render retrieve_submission_by_status template" do
       Assignment.stub(:find_by_id).and_return(@fake_assignment)
-      @fake_assignment.stub(:submissions).and_return(@sumbission_list)
+      @fake_assignment.stub(:submissions).and_return(@submissions_list)
+      @submissions_list.stub(:empty?)
       Student.stub(:find_all_by_key).and_return(@student_list)
       @student_list.stub_chain(:map, :flat_map)
-      get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :keys => "key", :format => :json}
+      get :retrieve_submissions, {:id => "id", :inst_key => "inst_key", :keys => "[key]", :format => :json}
       response.should render_template('retrieve_submission')
     end
   end
