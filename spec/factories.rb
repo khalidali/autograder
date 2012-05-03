@@ -3,6 +3,7 @@ baseTime = Time.now
 
 Factory.define :assignment do |a|
     a.due_date baseTime
+    a.grading_strategy 'latest'
 end
 
 
