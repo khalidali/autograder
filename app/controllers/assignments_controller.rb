@@ -133,12 +133,6 @@ class AssignmentsController < ApplicationController
     else
       submission = get_file_contents(params[:submission])
       @submission = @student.add_submission(submission)
-      @submission = @student.add_submission(submission)
-      @submission = @student.add_submission(submission)
-      @submission = @student.add_submission(submission)
-      @submission = @student.add_submission(submission)
-      @submission = @student.add_submission(submission)
-      @submission = @student.add_submission(submission)
       @student.save()
     end
   end
