@@ -18,7 +18,6 @@ end
 
 group :development, :test do
   gem 'cucumber-rails'
-  gem 'resque_spec'
   gem 'simplecov'
   gem 'rspec-rails'
   gem 'factory_girl', '2.2.0'
@@ -33,6 +32,7 @@ end
 
 group :test do
   # Pretty printed test output
+  gem 'resque_spec'
   gem 'turn', '< 0.8.3', :require => false
 # gem 'capybara'         # lets Cucumber pretend to be a web browser
   gem 'launchy'          # a useful debugging aid for user stories

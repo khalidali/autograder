@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(:version => 20120502185301) do
   end
 
   add_index "students", ["assignment_id"], :name => "index_students_on_assignment_id"
-  add_index "students", ["key"], :name => "index_students_on_key", :unique => true
+  add_index "students", ["key"], :name => "index_students_on_key"
 
   create_table "submissions", :force => true do |t|
     t.text     "body"

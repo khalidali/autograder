@@ -15,7 +15,7 @@ namespace :assignment do
     date = (Time.new + 60*60*24*3).to_s
     
     puts "Rake Task: Creates an assignment with given arguments"
-    a = `curl -s -X POST /dev/null localhost:3000/assignments/create.json -F "inst_key=#{args[:inst_key]}" -F "student_keys=[#{student}]" -F "name=cs169_lab1" -F "due_date=#{date}" -F "hard_deadline=#{date}" -F "grading_strategy=max" -F "submissions_limit=1" -F autograder=@#{autograder} 2>&1`
+    a = `curl -s -X POST /dev/null localhost:3000/assignments/create.json -F "inst_key=#{args[:inst_key]}" -F "student_keys=[#{student}]" -F "name=cs169_lab1" -F "due_date=#{date}" -F "hard_deadline=#{date}" -F "grading_strategy=max" -F "submissions_limit=10" -F autograder=@#{autograder} 2>&1`
     puts a
   end
   
@@ -104,13 +104,22 @@ namespace :assignment do
     end
     a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit -F submission=@#{submission} -F "key=#{args[:key]}" 2>&1`
     puts a
+    a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit -F submission=@#{submission} -F "key=#{args[:key]}" 2>&1`
+    puts a
+    a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit -F submission=@#{submission} -F "key=#{args[:key]}" 2>&1`
+    puts a
+    a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit -F submission=@#{submission} -F "key=#{args[:key]}" 2>&1`
+    puts a
+    a = `curl -s -X PUT /dev/null localhost:3000/assignments/#{args[:id]}/submit -F submission=@#{submission} -F "key=#{args[:key]}" 2>&1`
+    puts a
   end
   
   desc "To retrieve all submissions to the assignment"
   task :retrieve_submissions, [:id, :inst_key, :keys, :status]  => [:environment] do |t, args|
     puts "Rake Task: To retrieve all submissions to the assignment"
-    student = "#{args[:keys]}".gsub(/[;]/, ',')
-    a = `curl -s -X GET /dev/null localhost:3000/assignments/#{args[:id]}/submissions -d "inst_key=#{args[:inst_key]}" -d "keys=[#{student}]" -d "status=#{args[:status]}" 2>&1`
+
+    
+    a = `curl -s -X GET /dev/null localhost:3000/assignments/#{args[:id]}/submissions -d "inst_key=#{args[:inst_key]}"  2>&1`
     puts a
   end
   
