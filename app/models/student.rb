@@ -1,7 +1,7 @@
 class Student < ActiveRecord::Base
   belongs_to :assignment 
   has_many   :submissions
-  validates_uniqueness_of :key
+  #validates_uniqueness_of :key
   
   def add_submission(submission)
     new_submission = Submission.create!(:body => submission, :status => "pending")
